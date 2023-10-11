@@ -39,9 +39,7 @@ const SignIn__AUTH__POST = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 department: department,
                 roles: roles
             };
-            const token = jsonwebtoken_1.default.sign({ user: userData }, __CONSTANTS__1.JWT_SECRET, {
-                expiresIn: "9h"
-            });
+            const token = jsonwebtoken_1.default.sign({ user: userData }, __CONSTANTS__1.JWT_SECRET);
             return res.status(200).json({
                 userAuth: userData,
                 userJwt: token

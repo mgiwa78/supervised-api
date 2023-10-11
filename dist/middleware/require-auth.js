@@ -51,7 +51,6 @@ const AuthenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
             userPerms.forEach((perms) => permissions.push(perms.route));
         }));
         yield Promise.all(permissionPromises);
-        console.log(permissions);
         // userData.roles.forEach((e) =>
         //   e.permissions.forEach((e) => {
         //     permissions.push(e.route);

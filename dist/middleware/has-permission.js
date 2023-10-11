@@ -23,7 +23,6 @@ const hasPermission = (action) => {
             //   .populate("permissions")
             //   .exec();
             const hasPermission = user.permissions.includes(action);
-            console.log(hasPermission);
             if (hasPermission) {
                 return next();
             }
