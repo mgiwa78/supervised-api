@@ -32,10 +32,20 @@ export const AuthenticateUser = async (
     token.replace("Bearer ", ""),
     JWT_SECRET
   ) as unknown as DecodedToken;
+
   if (!decoded) {
-    return res.status(401).json({ status: "error", error: "Invalid Token" });
+    return res
+      .status(409)
+      .json({ status: "error", error: "Authentication is required" });
   }
+
   try {
+    setTimeout(() => {
+      return res
+        .status(409)
+        .json({ status: "error", error: "Authentication is required" });
+    }, 9000);
+
     const userData = await User.findById(decoded.user._id)
       .populate("roles")
       .populate({
@@ -103,7 +113,7 @@ export const AuthenticateUser = async (
   } catch (error) {
     console.error("Error verifying JWT token:", error);
     return res
-      .status(401)
-      .json({ status: "error", error: "Forbidden: invalid token" });
+      .status(409)
+      .json({ status: "error", error: "Authentication is required" });
   }
 };

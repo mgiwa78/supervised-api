@@ -98,6 +98,7 @@ export const hasPermission = (action: string) => {
       // const roles = await Role.find({ _id: { $in: user.roles } })
       //   .populate("permissions")
       //   .exec();
+
       const hasPermission = user.permissions.all.includes(action);
       if (hasPermission) {
         return next();

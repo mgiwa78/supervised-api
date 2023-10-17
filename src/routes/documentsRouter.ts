@@ -15,7 +15,7 @@ import { hasPermission } from "../middleware/has-permission";
 
 const documentRouter: Router = Router();
 
-documentRouter.get("/", Fetch__DOCUMENTS__GET);
+documentRouter.get("/", AuthenticateUser, Fetch__DOCUMENTS__GET);
 documentRouter.get(
   "/",
   AuthenticateUser,
