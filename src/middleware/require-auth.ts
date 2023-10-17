@@ -40,11 +40,11 @@ export const AuthenticateUser = async (
   }
 
   try {
-    setTimeout(() => {
-      return res
-        .status(409)
-        .json({ status: "error", error: "Authentication is required" });
-    }, 9000);
+    // setTimeout(() => {
+    //   return res
+    //     .status(409)
+    //     .json({ status: "error", error: "Authentication is required" });
+    // }, 9000);
 
     const userData = await User.findById(decoded.user._id)
       .populate("roles")

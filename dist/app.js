@@ -63,6 +63,7 @@ const corsOptions = {
     },
     credentials: true
 };
+app.use("/uploads/docs", express_1.default.static("uploads/docs"));
 app.use((0, cors_1.default)(corsOptions));
 app.set("trust proxy", true);
 app.use(body_parser_1.default.json());

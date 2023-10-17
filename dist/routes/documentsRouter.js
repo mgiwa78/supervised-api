@@ -5,17 +5,14 @@ const express_validator_1 = require("express-validator");
 const require_auth_1 = require("../middleware/require-auth");
 const Document_Controller_1 = require("../controllers/Document-Controller");
 const has_permission_1 = require("../middleware/has-permission");
+const multer_1 = require("../middleware/multer");
+const path = require("path");
 const documentRouter = (0, express_1.Router)();
-documentRouter.get("/", Document_Controller_1.Fetch__DOCUMENTS__GET);
+documentRouter.get("/", require_auth_1.AuthenticateUser, Document_Controller_1.Fetch__DOCUMENTS__GET);
+documentRouter.post("/convertToWord", multer_1.uploadDocumentForConvertion.fields([{ name: "content", maxCount: 1 }]), Document_Controller_1.CONVERT_CONTENT_TO_WORD_GET);
 documentRouter.get("/", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchOwnDocuments"), Document_Controller_1.Fetch__MY_DOCUMENTS__GET);
 documentRouter.get("/:documentID", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchOwnDocument"), Document_Controller_1.Fetch__MY_DOCUMENT__GET);
-documentRouter.post("/", [
-    (0, express_validator_1.body)("name").notEmpty().withMessage("Document name is required"),
-    (0, express_validator_1.body)("description")
-        .notEmpty()
-        .withMessage("Document description is required"),
-    (0, express_validator_1.body)("content").notEmpty().withMessage("Document content is required")
-], require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("createDocument"), Document_Controller_1.Create__DOCUMENT__POST);
+documentRouter.post("/", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("createDocument"), Document_Controller_1.Create__DOCUMENT__POST);
 documentRouter.put("/:documentID", [
     (0, express_validator_1.body)("name").notEmpty().withMessage("Document name is required"),
     (0, express_validator_1.body)("description")

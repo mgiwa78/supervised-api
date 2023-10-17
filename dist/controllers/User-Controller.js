@@ -31,7 +31,7 @@ exports.Fetch__ORGANIZATIONS_USERS__GET = Fetch__ORGANIZATIONS_USERS__GET;
 // Fetch all users for an admin
 const Fetch__USERS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.user);
+        const allUsers = [];
         const users = yield user_1.User.find()
             .populate("department")
             .populate("roles")
@@ -41,6 +41,27 @@ const Fetch__USERS__GET = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 path: "permissions"
             }
         });
+        req.user.permissions.types["getAllUsers"];
+        if (req.user.permissions.types["getAllUsers"]) {
+            yield Promise.all(req.user.permissions.types["getAllUsers"].map((e) => __awaiter(void 0, void 0, void 0, function* () {
+                console.log(e.toString());
+                const r = yield role_1.Role.findById(e);
+                const us = yield user_1.User.find({
+                    roles: { $in: e }
+                })
+                    .populate("department")
+                    .populate("roles")
+                    .populate({
+                    path: "roles",
+                    populate: {
+                        path: "permissions"
+                    }
+                });
+                console.log(us);
+                allUsers.push(...us);
+            })));
+            return res.json({ status: "success", data: allUsers });
+        }
         return res.json({ status: "success", data: users });
     }
     catch (error) {

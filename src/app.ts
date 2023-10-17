@@ -4,7 +4,7 @@ import bodyParser, { json } from "body-parser";
 import cookieSession from "cookie-session";
 import "express-async-errors";
 import cors from "cors";
-
+import fileUpload, { UploadedFile } from "express-fileupload";
 import rootRouter from "./routes/rootRouter";
 import { errorHandler } from "./middleware/error-handlers";
 import { NotFoundError } from "./errors/not-found-error";
@@ -30,6 +30,7 @@ const corsOptions = {
   },
   credentials: true
 };
+app.use("/uploads/docs", express.static("uploads/docs"));
 
 app.use(cors(corsOptions));
 app.set("trust proxy", true);

@@ -8,7 +8,10 @@ exports.Permission = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const permissionSchema = new mongoose_1.default.Schema({
     route: { type: String, required: true },
-    action: { type: String, required: true }
+    action: { type: String, required: true },
+    types: [
+        { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Types", required: true }
+    ]
 });
 permissionSchema.set("timestamps", true);
 // mongoose.model("Permission", permissionSchema);

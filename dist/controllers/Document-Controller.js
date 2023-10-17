@@ -8,13 +8,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Update__DOCUMENT__PUT = exports.Create__DOCUMENT__POST = exports.Fetch__MY_DOCUMENT__GET = exports.Fetch__MY_DOCUMENTS__GET = exports.Fetch__DOCUMENTS__GET = void 0;
+exports.Update__DOCUMENT__PUT = exports.Create__DOCUMENT__POST = exports.Fetch__MY_DOCUMENT__GET = exports.Fetch__MY_DOCUMENTS__GET = exports.Fetch__DOCUMENTS__GET = exports.CONVERT_CONTENT_TO_WORD_GET = void 0;
 const document_1 = require("../models/document");
+const mammoth_1 = __importDefault(require("mammoth"));
+const path_1 = __importDefault(require("path"));
+const CONVERT_CONTENT_TO_WORD_GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const files = req.files;
+        if (files) {
+            const uploadedFile = files[0];
+            const patsh = uploadedFile.destination + uploadedFile.filename;
+            const filePath = path_1.default.join(uploadedFile.destination, uploadedFile.filename);
+            console.log(uploadedFile);
+            mammoth_1.default
+                .convertToHtml({ path: filePath })
+                .then((result) => {
+                const html = result.value;
+                console.log(html);
+                return res.json({ contentToHtml: html });
+            })
+                .catch((error) => {
+                console.log(error);
+                return res.status(500).json({ error: "Error converting file" });
+            });
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred during file upload.");
+    }
+});
+exports.CONVERT_CONTENT_TO_WORD_GET = CONVERT_CONTENT_TO_WORD_GET;
 const Fetch__DOCUMENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const documents = yield document_1.Document.find();
-        console.log(documents);
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -57,6 +88,7 @@ const Fetch__MY_DOCUMENT__GET = (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.Fetch__MY_DOCUMENT__GET = Fetch__MY_DOCUMENT__GET;
 const Create__DOCUMENT__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, content, description } = req.body;
+    console.log(title);
     try {
         const document = new document_1.Document({
             title,

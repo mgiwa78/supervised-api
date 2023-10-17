@@ -28,9 +28,16 @@ const AuthenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     }
     const decoded = jsonwebtoken_1.default.verify(token.replace("Bearer ", ""), __CONSTANTS__1.JWT_SECRET);
     if (!decoded) {
-        return res.status(401).json({ status: "error", error: "Invalid Token" });
+        return res
+            .status(409)
+            .json({ status: "error", error: "Authentication is required" });
     }
     try {
+        // setTimeout(() => {
+        //   return res
+        //     .status(409)
+        //     .json({ status: "error", error: "Authentication is required" });
+        // }, 9000);
         const userData = yield models_1.User.findById(decoded.user._id)
             .populate("roles")
             .populate({
@@ -43,12 +50,31 @@ const AuthenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         const userRoles = yield role_1.Role.find({
             _id: { $in: userData.roles }
         }).populate("permissions");
-        const permissions = [];
+        const permissions = { all: [], types: {} };
         const permissionPromises = userRoles.map((role) => __awaiter(void 0, void 0, void 0, function* () {
             const userPerms = yield permission_1.Permission.find({
                 _id: { $in: role.permissions }
             });
-            userPerms.forEach((perms) => permissions.push(perms.route));
+            userPerms.forEach((perms) => {
+                permissions.all.push(perms.route);
+                if (perms.types[perms.route]) {
+                    perms.types.forEach((e) => {
+                        permissions.types[perms.route] = [
+                            ...permissions.types[perms.route],
+                            e
+                        ];
+                    });
+                }
+                else {
+                    perms.types.forEach((e) => {
+                        permissions.types[perms.route] = [];
+                        permissions.types[perms.route] = [
+                            ...permissions.types[perms.route],
+                            e
+                        ];
+                    });
+                }
+            });
         }));
         yield Promise.all(permissionPromises);
         // userData.roles.forEach((e) =>
@@ -68,8 +94,8 @@ const AuthenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
     catch (error) {
         console.error("Error verifying JWT token:", error);
         return res
-            .status(401)
-            .json({ status: "error", error: "Forbidden: invalid token" });
+            .status(409)
+            .json({ status: "error", error: "Authentication is required" });
     }
 });
 exports.AuthenticateUser = AuthenticateUser;
