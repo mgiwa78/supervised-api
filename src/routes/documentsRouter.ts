@@ -31,13 +31,6 @@ documentRouter.get(
 );
 documentRouter.post(
   "/",
-  [
-    body("name").notEmpty().withMessage("Document name is required"),
-    body("description")
-      .notEmpty()
-      .withMessage("Document description is required"),
-    body("content").notEmpty().withMessage("Document content is required")
-  ],
   AuthenticateUser,
   hasPermission("createDocument"),
   Create__DOCUMENT__POST

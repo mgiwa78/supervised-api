@@ -94,12 +94,11 @@ import { Request, Response, NextFunction } from "express";
 export const hasPermission = (action: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;
-
     try {
       // const roles = await Role.find({ _id: { $in: user.roles } })
       //   .populate("permissions")
       //   .exec();
-      const hasPermission = user.permissions.includes(action);
+      const hasPermission = user.permissions.all.includes(action);
       if (hasPermission) {
         return next();
       }

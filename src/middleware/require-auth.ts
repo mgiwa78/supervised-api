@@ -51,13 +51,33 @@ export const AuthenticateUser = async (
       _id: { $in: userData.roles }
     }).populate("permissions");
 
-    const permissions: any = [];
+    const permissions: any = { all: [], types: {} };
 
     const permissionPromises = userRoles.map(async (role: TRole) => {
       const userPerms = await Permission.find({
         _id: { $in: role.permissions }
       });
-      userPerms.forEach((perms: any) => permissions.push(perms.route));
+
+      userPerms.forEach((perms: any) => {
+        permissions.all.push(perms.route);
+
+        if (perms.types[perms.route]) {
+          perms.types.forEach((e: string) => {
+            permissions.types[perms.route] = [
+              ...permissions.types[perms.route],
+              e
+            ];
+          });
+        } else {
+          perms.types.forEach((e: string) => {
+            permissions.types[perms.route] = [];
+            permissions.types[perms.route] = [
+              ...permissions.types[perms.route],
+              e
+            ];
+          });
+        }
+      });
     });
 
     await Promise.all(permissionPromises);

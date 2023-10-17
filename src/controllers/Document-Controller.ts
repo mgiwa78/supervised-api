@@ -5,7 +5,6 @@ import { TDocument } from "../models/document";
 export const Fetch__DOCUMENTS__GET = async (req: Request, res: Response) => {
   try {
     const documents: TDocument[] = await Document.find();
-    console.log(documents);
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -48,6 +47,7 @@ export const Fetch__MY_DOCUMENT__GET = async (req: Request, res: Response) => {
 
 export const Create__DOCUMENT__POST = async (req: Request, res: Response) => {
   const { title, content, description } = req.body;
+  console.log(title);
   try {
     const document: DocumentDoc = new Document({
       title,

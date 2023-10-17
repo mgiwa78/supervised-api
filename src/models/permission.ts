@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, model, Schema } from "mongoose";
+import { TRole } from "./role";
 
 export interface TPermission {
   route: string;
@@ -12,11 +13,15 @@ interface PermissionModel extends mongoose.Model<PermissionDoc> {
 export interface PermissionDoc extends mongoose.Document {
   route: string;
   action: string;
+  types: Array<TRole>;
 }
 
 const permissionSchema = new mongoose.Schema({
   route: { type: String, required: true },
-  action: { type: String, required: true }
+  action: { type: String, required: true },
+  types: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Types", required: true }
+  ]
 });
 
 permissionSchema.set("timestamps", true);

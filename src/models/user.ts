@@ -46,7 +46,12 @@ declare global {
         address?: string;
         lastName: string;
         roles: Array<TRole>;
-        permissions?: Array<String>;
+        permissions?: {
+          all: Array<String>;
+          types: {
+            getAllUsers: Array<String>;
+          };
+        };
       };
       permissions: Array<PermissionDoc>;
     }

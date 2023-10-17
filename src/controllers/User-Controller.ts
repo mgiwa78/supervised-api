@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/user";
+import { TUser, User } from "../models/user";
 import { Password } from "../services/password";
 import { Role } from "../models/role";
 
@@ -25,7 +25,7 @@ export const Fetch__ORGANIZATIONS_USERS__GET = async (
 // Fetch all users for an admin
 export const Fetch__USERS__GET = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
+    const allUsers: any = [];
     const users = await User.find()
       .populate("department")
       .populate("roles")
@@ -35,6 +35,36 @@ export const Fetch__USERS__GET = async (req: Request, res: Response) => {
           path: "permissions"
         }
       });
+
+    req.user.permissions.types["getAllUsers"];
+
+    if (req.user.permissions.types["getAllUsers"]) {
+      await Promise.all(
+        req.user.permissions.types["getAllUsers"].map(async (e) => {
+          console.log(e.toString());
+
+          const r = await Role.findById(e);
+
+          const us = await User.find({
+            roles: { $in: e }
+          })
+            .populate("department")
+            .populate("roles")
+            .populate({
+              path: "roles",
+              populate: {
+                path: "permissions"
+              }
+            });
+
+          console.log(us);
+
+          allUsers.push(...us);
+        })
+      );
+
+      return res.json({ status: "success", data: allUsers });
+    }
 
     return res.json({ status: "success", data: users });
   } catch (error) {
