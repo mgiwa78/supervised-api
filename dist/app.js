@@ -50,6 +50,7 @@ const whitelist = [
     "http://localhost:3011",
     "https://supervised-client.vercel.app",
     "https://supervised-client.vercel.app/",
+    "https://supervised-prod.vercel.app/",
     "http://localhost:3013"
 ];
 const corsOptions = {
@@ -63,7 +64,8 @@ const corsOptions = {
     },
     credentials: true
 };
-app.use("/uploads/documents", express_1.default.static("puclic/uploads/documents"));
+app.use("public/uploads/documents", express_1.default.static("public/uploads/documents"));
+app.use("uploads/documents", express_1.default.static("uploads/documents"));
 app.use((0, cors_1.default)(corsOptions));
 app.set("trust proxy", true);
 app.use(body_parser_1.default.json());
