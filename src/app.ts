@@ -30,7 +30,7 @@ const corsOptions = {
   credentials: true
 };
 
-app.use("/uploads/documents", express.static("uploads/documents"));
+app.use("/uploads/documents", express.static("puclic/uploads/documents"));
 
 app.use(cors(corsOptions));
 app.set("trust proxy", true);
