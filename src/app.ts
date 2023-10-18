@@ -29,7 +29,8 @@ const corsOptions = {
   },
   credentials: true
 };
-app.use("/uploads/docs", express.static("uploads/docs"));
+
+app.use("/uploads/documents", express.static("uploads/documents"));
 
 app.use(cors(corsOptions));
 app.set("trust proxy", true);
