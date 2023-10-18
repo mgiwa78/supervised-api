@@ -1,10 +1,9 @@
 import "dotenv/config";
-import { connect } from "mongoose";
+import mongoose from "mongoose";
 import { app } from "./app";
 import { MONGO_URI } from "./__CONSTANTS__";
 import { User } from "./models";
 import { Role } from "./models/role";
-import { MongoClient } from "mongodb";
 const port = 6001;
 
 const start = async () => {
@@ -12,9 +11,7 @@ const start = async () => {
     throw new Error("jwt key dose not exist");
   }
   try {
-    const client = await new MongoClient(MONGO_URI);
-
-    await client.connect();
+    await mongoose.connect(MONGO_URI);
   } catch (error) {
     console.error("Stufff", error);
   }

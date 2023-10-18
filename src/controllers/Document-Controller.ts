@@ -6,6 +6,7 @@ import { TDocument } from "../models/document";
 import path from "path";
 
 import { uploadFileToStorage } from "../_utils/firebase";
+import { ObjectId } from "mongodb";
 
 export const CONVERT_CONTENT_TO_WORD_GET = async (
   req: Request,
@@ -44,6 +45,31 @@ export const Fetch__DOCUMENTS__GET = async (req: Request, res: Response) => {
   }
 };
 
+export const Assign_Document_To__Supervisor__POST = async (
+  req: Request,
+  res: Response
+) => {
+  const { documentId } = req.params;
+  const { supervisor } = req.body; // Assuming you send supervisorId in the request body
+  console.log(documentId);
+  // Find the document by its ID
+  const document: DocumentDoc = await Document.findById(documentId);
+  console.log(document);
+
+  if (document) {
+    document.supervisors = [...document.supervisors, supervisor];
+    document.save();
+
+    return res.json({
+      success: true,
+      message: "Supervisor assigned successfully"
+    });
+  } else {
+    return res
+      .status(404)
+      .json({ success: false, message: "Document not found" });
+  }
+};
 export const Fetch__MY_DOCUMENTS__GET = async (req: Request, res: Response) => {
   try {
     console.log(req.user);
@@ -53,6 +79,37 @@ export const Fetch__MY_DOCUMENTS__GET = async (req: Request, res: Response) => {
     });
 
     res.json({ status: "success", data: documents });
+  } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
+export const Fetch__Assigned_DOCUMENTS__GET = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    console.log(req.user.id);
+    const documents: TDocument[] = await Document.find({
+      supervisors: req.user.id
+    });
+
+    res.json({ status: "success", data: documents });
+  } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
+export const Fetch__Assigned_DOCUMENT__GET = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { documentId } = req.params;
+    console.log(documentId);
+
+    const document: TDocument[] = await Document.findById(documentId);
+    console.log(document);
+
+    res.json({ status: "success", data: document });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
   }
@@ -95,6 +152,7 @@ export const Create__DOCUMENT__POST = async (req: Request, res: Response) => {
 
     res.json({ status: "success", data: document });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ status: "error", error: error.message });
   }
 };

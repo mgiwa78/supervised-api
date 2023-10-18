@@ -30,6 +30,12 @@ const DocumentSchema = new mongoose_1.default.Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
     description: { type: String, required: true },
+    supervisors: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "Supervisors"
+        }
+    ],
     author: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "User"

@@ -5,6 +5,7 @@ export interface TDocument {
   title: string;
   content: string;
   description: string;
+  supervisors: string[] | TUser[];
   author: string | TUser;
 }
 
@@ -12,6 +13,7 @@ export interface DocumentDoc extends Doc {
   title: string;
   content: string;
   description: string;
+  supervisors: string[] | TUser[];
   author: string | TUser;
 }
 
@@ -23,6 +25,12 @@ const DocumentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   description: { type: String, required: true },
+  supervisors: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Supervisors"
+    }
+  ],
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"

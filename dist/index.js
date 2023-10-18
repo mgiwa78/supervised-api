@@ -8,19 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
+const mongoose_1 = __importDefault(require("mongoose"));
 const app_1 = require("./app");
 const __CONSTANTS__1 = require("./__CONSTANTS__");
-const mongodb_1 = require("mongodb");
 const port = 6001;
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     if (!process.env.JWT_KEY) {
         throw new Error("jwt key dose not exist");
     }
     try {
-        const client = yield new mongodb_1.MongoClient(__CONSTANTS__1.MONGO_URI);
-        yield client.connect();
+        yield mongoose_1.default.connect(__CONSTANTS__1.MONGO_URI);
     }
     catch (error) {
         console.error("Stufff", error);

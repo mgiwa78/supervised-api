@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Update__DOCUMENT__PUT = exports.Create__DOCUMENT__POST = exports.Fetch__MY_DOCUMENT__GET = exports.Fetch__MY_DOCUMENTS__GET = exports.Fetch__DOCUMENTS__GET = exports.CONVERT_CONTENT_TO_WORD_GET = void 0;
+exports.Update__DOCUMENT__PUT = exports.Create__DOCUMENT__POST = exports.Fetch__MY_DOCUMENT__GET = exports.Fetch__Assigned_DOCUMENT__GET = exports.Fetch__Assigned_DOCUMENTS__GET = exports.Fetch__MY_DOCUMENTS__GET = exports.Assign_Document_To__Supervisor__POST = exports.Fetch__DOCUMENTS__GET = exports.CONVERT_CONTENT_TO_WORD_GET = void 0;
 const document_1 = require("../models/document");
 const CONVERT_CONTENT_TO_WORD_GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,6 +47,28 @@ const Fetch__DOCUMENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.Fetch__DOCUMENTS__GET = Fetch__DOCUMENTS__GET;
+const Assign_Document_To__Supervisor__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { documentId } = req.params;
+    const { supervisor } = req.body; // Assuming you send supervisorId in the request body
+    console.log(documentId);
+    // Find the document by its ID
+    const document = yield document_1.Document.findById(documentId);
+    console.log(document);
+    if (document) {
+        document.supervisors = [...document.supervisors, supervisor];
+        document.save();
+        return res.json({
+            success: true,
+            message: "Supervisor assigned successfully"
+        });
+    }
+    else {
+        return res
+            .status(404)
+            .json({ success: false, message: "Document not found" });
+    }
+});
+exports.Assign_Document_To__Supervisor__POST = Assign_Document_To__Supervisor__POST;
 const Fetch__MY_DOCUMENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.user);
@@ -60,6 +82,32 @@ const Fetch__MY_DOCUMENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.Fetch__MY_DOCUMENTS__GET = Fetch__MY_DOCUMENTS__GET;
+const Fetch__Assigned_DOCUMENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.user.id);
+        const documents = yield document_1.Document.find({
+            supervisors: req.user.id
+        });
+        res.json({ status: "success", data: documents });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Fetch__Assigned_DOCUMENTS__GET = Fetch__Assigned_DOCUMENTS__GET;
+const Fetch__Assigned_DOCUMENT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { documentId } = req.params;
+        console.log(documentId);
+        const document = yield document_1.Document.findById(documentId);
+        console.log(document);
+        res.json({ status: "success", data: document });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Fetch__Assigned_DOCUMENT__GET = Fetch__Assigned_DOCUMENT__GET;
 const Fetch__MY_DOCUMENT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.params.documentID) {
@@ -94,6 +142,7 @@ const Create__DOCUMENT__POST = (req, res) => __awaiter(void 0, void 0, void 0, f
         res.json({ status: "success", data: document });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ status: "error", error: error.message });
     }
 });
