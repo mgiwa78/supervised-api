@@ -12,18 +12,14 @@ import {
   Update__DOCUMENT__PUT
 } from "../controllers/Document-Controller";
 import { hasPermission } from "../middleware/has-permission";
-import { uploadDocumentForConvertion } from "../middleware/multer";
+// import { uploadDocumentForConvertion } from "../middleware/multer";
 
 const path = require("path");
 const documentRouter: Router = Router();
 
 documentRouter.get("/", AuthenticateUser, Fetch__DOCUMENTS__GET);
 
-documentRouter.post(
-  "/convertToWord",
-  uploadDocumentForConvertion.fields([{ name: "content", maxCount: 1 }]),
-  CONVERT_CONTENT_TO_WORD_GET
-);
+documentRouter.post("/convertToWord", CONVERT_CONTENT_TO_WORD_GET);
 
 documentRouter.get(
   "/",

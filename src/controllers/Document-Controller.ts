@@ -1,42 +1,34 @@
 import { Request, Response } from "express";
 import { DocumentDoc, Document } from "../models/document";
 import { TDocument } from "../models/document";
-import mammoth from "mammoth";
-import { FileArray, UploadedFile } from "express-fileupload";
+// import mammoth from "mammoth";
+// import { FileArray, UploadedFile } from "express-fileupload";
 import path from "path";
 
-type File = {
-  name: string;
-  destination: string;
-  filename: string;
-};
+import { uploadFileToStorage } from "../_utils/firebase";
+
 export const CONVERT_CONTENT_TO_WORD_GET = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const files = req.files.content as any;
-    if (files) {
-      const uploadedFile = files[0];
-      const patsh = uploadedFile.destination + uploadedFile.filename;
-
-      const filePath = path.join(
-        uploadedFile.destination,
-        uploadedFile.filename
-      );
-      console.log(uploadedFile);
-      mammoth
-        .convertToHtml({ path: filePath })
-        .then((result) => {
-          const html = result.value;
-          console.log(html);
-          return res.json({ contentToHtml: html });
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(500).json({ error: "Error converting file" });
-        });
-    }
+    const content_url = req.body.content_url;
+    // const files = req.files as FileArray;
+    // if (files) {
+    //   const uploadedFile: Filse = files[0] as Filse;
+    //   const patsh = uploadedFile.destination + uploadedFile.filename;
+    //   console.log(path);
+    // mammoth
+    //   .convertToHtml({ path: content_url })
+    //   .then((result) => {
+    //     const html = result.value;
+    //     console.log(html);
+    //     return res.json({ contentToHtml: html });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     return res.status(500).json({ error: "Error converting file" });
+    //   });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred during file upload.");

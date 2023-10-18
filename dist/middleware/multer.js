@@ -1,21 +1,23 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadDocumentForConvertion = void 0;
-const multer_1 = __importDefault(require("multer"));
-exports.uploadDocumentForConvertion = (0, multer_1.default)({
-    storage: multer_1.default.diskStorage({
-        destination: function (req, file, cb) {
-            cb(null, "uploads/docs");
-        },
-        filename: function (req, file, cb) {
-            const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-            cb(null, uniqueSuffix + "-" + file.originalname.split(" ").join("_"));
-        }
-    })
-});
+// import multer from "multer";
+// import { uploadFileToStorage } from "../_utils/firebase";
+// export const uploadDocumentForConvertion = multer({
+//   storage: multer.diskStorage({
+//     destination: async function (req, file, cb) {
+//       console.log(file);
+//       try {
+//         const path = await uploadFileToStorage(file);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     },
+//     filename: function (req, file, cb) {
+//       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//       cb(null, uniqueSuffix + "-" + file.originalname.split(" ").join("_"));
+//     }
+//   })
+// });
 // export const uploadProducts = multer({
 //   storage: multer.diskStorage({
 //     destination: function (req, file, cb) {
