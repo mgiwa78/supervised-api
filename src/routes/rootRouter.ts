@@ -9,6 +9,7 @@ import rolesRouter from "./rolesRouter";
 import permissionsRouter from "./permissionsRoute";
 import documentRouter from "./documentsRouter";
 import reviewSessionRouter from "./reviewSessionRouter";
+import commentsRouter from "./commentsRouter";
 
 let rootRouter = Router();
 
@@ -21,6 +22,7 @@ rootRouter.get("/", (req, res) => {
 rootRouter.use("/auth", authRouter);
 rootRouter.use("/reviewSessions", reviewSessionRouter);
 rootRouter.use("/roles", rolesRouter);
+rootRouter.use("/comments", commentsRouter);
 rootRouter.use("/users", userRouter);
 rootRouter.use("/departments", departmentRouter);
 rootRouter.use("/documents", documentRouter);
