@@ -17,7 +17,7 @@ rootRouter.get("/", (req, res) => {
 });
 ////
 rootRouter.use("/auth", auth_1.default);
-rootRouter.use("/reviewSession", reviewSessionRouter_1.default);
+rootRouter.use("/reviewSessions", reviewSessionRouter_1.default);
 rootRouter.use("/roles", rolesRouter_1.default);
 rootRouter.use("/users", usersRouter_1.default);
 rootRouter.use("/departments", departmentRouter_1.default);

@@ -1,31 +1,29 @@
 import { Request, Response } from "express";
 import { DocumentDoc, Document } from "../models/document";
 import { TDocument } from "../models/document";
-// import mammoth from "mammoth";
-// import { FileArray, UploadedFile } from "express-fileupload";
 import path from "path";
 
 import { uploadFileToStorage } from "../_utils/firebase";
 import { ObjectId } from "mongodb";
 import { ReviewSession } from "../models/reviewSession";
+import { Comment } from "../models/comment";
 
-// Assuming you have a ReviewSession model (e.g., reviewSessionModel.js)
-
-// Initialize a new review session
 export const INITIALIZE_A_REVIEWSESSION__POST = async (
   req: Request,
   res: Response
 ) => {
   try {
     const { documentId, supervisorId } = req.body;
+    const doc = await Document.findById(documentId);
+
     const newReviewSession = new ReviewSession({
       document: documentId,
-      supervisors: [supervisorId]
+      supervisors: [supervisorId],
+      content: doc.content
     });
 
     await newReviewSession.save();
 
-    console.log(newReviewSession);
     res.json({
       success: true,
       message: "Review session initialized successfully",
@@ -36,50 +34,145 @@ export const INITIALIZE_A_REVIEWSESSION__POST = async (
   }
 };
 
-// Comment on an existing review session
 export const COMMENT_ON__REVIEWSESSION__POST = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const { reviewSessionId, comment } = req.body;
-    await ReviewSession.findByIdAndUpdate(
-      reviewSessionId,
-      { $push: { comments: comment } },
-      { new: true }
+    const { comment } = req.body;
+    const { reviewSessionId } = req.params;
+    console.log(req.user);
+
+    const newComment = new Comment({
+      content: comment,
+      author: req.user.id
+    });
+
+    newComment.save();
+
+    // const s = await Comment.findById("65310acd9dec635b7ba9794e");
+    // console.log(s);
+
+    await ReviewSession.updateOne(
+      { _id: reviewSessionId },
+      {
+        $push: { comments: newComment._id }
+      }
     );
 
-    const reviewSession = await ReviewSession.findById(reviewSessionId);
+    const reviewSession = await ReviewSession.findById(reviewSessionId)
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author"
+        }
+      });
 
     res.json({
       success: true,
       message: "Comment added successfully",
-      data: reviewSession
+      data: reviewSession.comments
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Retrieve all review sessions where the supervisor exists
+export const Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id } = req.user;
+    console.log("firssaddat");
+
+    const reviewSessions = await ReviewSession.find({
+      supervisors: { $in: id }
+    })
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author"
+        }
+      });
+    console.log("firssaasdsadadefddat");
+    res.json({ success: true, data: reviewSessions });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+export const Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { content, comments } = req.body;
+    const { id } = req.user;
+    const { reviewSessionId } = req.params;
+
+    const reviewSession = await ReviewSession.findById(reviewSessionId);
+
+    reviewSession.content = content;
+    reviewSession.save();
+
+    const UpreviewSession = await ReviewSession.findById(reviewSessionId)
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author"
+        }
+      })
+      .exec();
+    console.log(UpreviewSession);
+
+    res.json({ success: true, data: reviewSession });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 export const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = async (
   req: Request,
   res: Response
 ) => {
   try {
     const { id } = req.user;
+    const { reviewSessionId } = req.params;
 
-    const reviewSessions = await ReviewSession.find({
-      supervisors: { $in: { id } }
-    });
+    if (!reviewSessionId) {
+      return res.status(404).json({
+        success: true,
+        message: "Review Session Id is required"
+      });
+    }
 
-    res.json({ success: true, data: reviewSessions });
+    const reviewSession = await ReviewSession.findOne({
+      supervisors: { $in: id },
+      _id: reviewSessionId
+    })
+      .populate("comments")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author"
+        }
+      });
+
+    if (!reviewSession) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Review-session ID"
+      });
+    }
+
+    res.json({ success: true, data: reviewSession });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// Retrieve all review sessions for which a student is an author
 export const Fetch__REVIEWSESSION_FOR_STUDENT__GET = async (
   req: Request,
   res: Response

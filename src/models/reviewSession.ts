@@ -5,13 +5,7 @@ import { TComment } from "./comment";
 
 export interface TReviewSession {
   _id: string;
-  comments: string | TComment;
-  supervisors: Array<TUser>;
-  document: string | TDocument;
-}
-
-export interface ReviewSessionDoc extends Document {
-  _id: string;
+  content: string;
   comments: string | TComment;
   supervisors: Array<TUser>;
   document: string | TDocument;
@@ -21,9 +15,17 @@ export interface ReviewSessionModel extends Model<ReviewSessionDoc> {
   build(attrs: TReviewSession): ReviewSessionDoc;
 }
 
-const ReviewSessionSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  comments: [{ type: Schema.Types.ObjectId, ref: "Comments" }],
+export interface ReviewSessionDoc extends Document {
+  _id: string;
+  content: string;
+  comments: string | TComment;
+  supervisors: Array<TUser> | Array<string>;
+  document: string | TDocument;
+}
+
+const ReviewSessionSchema = new Schema({
+  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+  content: { type: Schema.Types.String },
   supervisors: [{ type: Schema.Types.ObjectId, ref: "Supervisors" }],
   document: { type: Schema.Types.ObjectId, ref: "Document" }
 });

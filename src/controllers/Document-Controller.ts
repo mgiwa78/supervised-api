@@ -51,10 +51,8 @@ export const Assign_Document_To__Supervisor__POST = async (
 ) => {
   const { documentId } = req.params;
   const { supervisor } = req.body; // Assuming you send supervisorId in the request body
-  console.log(documentId);
   // Find the document by its ID
   const document: DocumentDoc = await Document.findById(documentId);
-  console.log(document);
 
   if (document) {
     document.supervisors = [...document.supervisors, supervisor];
@@ -72,8 +70,6 @@ export const Assign_Document_To__Supervisor__POST = async (
 };
 export const Fetch__MY_DOCUMENTS__GET = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
-
     const documents: TDocument[] = await Document.find({
       autor: req.user.id
     });
@@ -88,7 +84,6 @@ export const Fetch__Assigned_DOCUMENTS__GET = async (
   res: Response
 ) => {
   try {
-    console.log(req.user.id);
     const documents: TDocument[] = await Document.find({
       supervisors: req.user.id
     });
@@ -104,10 +99,8 @@ export const Fetch__Assigned_DOCUMENT__GET = async (
 ) => {
   try {
     const { documentId } = req.params;
-    console.log(documentId);
 
     const document: TDocument[] = await Document.findById(documentId);
-    console.log(document);
 
     res.json({ status: "success", data: document });
   } catch (error) {
@@ -139,7 +132,6 @@ export const Fetch__MY_DOCUMENT__GET = async (req: Request, res: Response) => {
 
 export const Create__DOCUMENT__POST = async (req: Request, res: Response) => {
   const { title, content, description } = req.body;
-  console.log(title);
   try {
     const document: DocumentDoc = new Document({
       title,

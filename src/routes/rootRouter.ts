@@ -19,7 +19,7 @@ rootRouter.get("/", (req, res) => {
 ////
 
 rootRouter.use("/auth", authRouter);
-rootRouter.use("/reviewSession", reviewSessionRouter);
+rootRouter.use("/reviewSessions", reviewSessionRouter);
 rootRouter.use("/roles", rolesRouter);
 rootRouter.use("/users", userRouter);
 rootRouter.use("/departments", departmentRouter);

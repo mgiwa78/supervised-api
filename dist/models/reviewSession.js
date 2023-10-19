@@ -26,9 +26,9 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewSession = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const ReviewSessionSchema = new mongoose_1.default.Schema({
-    name: { type: String, required: true },
-    comments: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Comments" }],
+const ReviewSessionSchema = new mongoose_1.Schema({
+    comments: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Comment" }],
+    content: { type: mongoose_1.Schema.Types.String },
     supervisors: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Supervisors" }],
     document: { type: mongoose_1.Schema.Types.ObjectId, ref: "Document" }
 });
