@@ -49,12 +49,12 @@ documentRouter.get(
   Fetch__Assigned_DOCUMENT__GET
 );
 
-// documentRouter.get(
-//   "/:documentID",
-//   AuthenticateUser,
-//   hasPermission("fetchOwnDocument"),
-//   Fetch__Assigned_DOCUMENT__GET
-// );
+documentRouter.get(
+  "/:documentID",
+  AuthenticateUser,
+  hasPermission("fetchOwnDocument"),
+  Fetch__MY_DOCUMENT__GET
+);
 documentRouter.post(
   "/",
   AuthenticateUser,

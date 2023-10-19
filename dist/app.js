@@ -50,6 +50,7 @@ const whitelist = [
     "http://localhost:3011",
     "https://supervised-client.vercel.app",
     "https://supervised-client.vercel.app/",
+    "https://supervised-prod.vercel.app/auth",
     "https://supervised-prod.vercel.app/",
     "http://localhost:3013"
 ];
