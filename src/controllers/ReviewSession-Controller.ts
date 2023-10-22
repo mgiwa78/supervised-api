@@ -41,7 +41,6 @@ export const COMMENT_ON__REVIEWSESSION__POST = async (
   try {
     const { comment } = req.body;
     const { reviewSessionId } = req.params;
-    console.log(req.user);
 
     const newComment = new Comment({
       content: comment,
@@ -51,7 +50,6 @@ export const COMMENT_ON__REVIEWSESSION__POST = async (
     newComment.save();
 
     // const s = await Comment.findById("65310acd9dec635b7ba9794e");
-    // console.log(s);
 
     await ReviewSession.updateOne(
       { _id: reviewSessionId },
@@ -85,11 +83,17 @@ export const Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = async (
 ) => {
   try {
     const { id } = req.user;
-    console.log("firssaddat");
 
     const reviewSessions = await ReviewSession.find({
       supervisors: { $in: id }
     })
+      .populate("document")
+      .populate({
+        path: "document",
+        populate: {
+          path: "author"
+        }
+      })
       .populate("comments")
       .populate({
         path: "comments",
@@ -97,7 +101,7 @@ export const Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = async (
           path: "author"
         }
       });
-    console.log("firssaasdsadadefddat");
+
     res.json({ success: true, data: reviewSessions });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -126,7 +130,6 @@ export const Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = async (
         }
       })
       .exec();
-    console.log(UpreviewSession);
 
     res.json({ success: true, data: reviewSession });
   } catch (error) {
@@ -149,7 +152,6 @@ export const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = async (
     }
 
     const reviewSession = await ReviewSession.findOne({
-      supervisors: { $in: id },
       _id: reviewSessionId
     })
       .populate("comments")
@@ -178,14 +180,24 @@ export const Fetch__REVIEWSESSION_FOR_STUDENT__GET = async (
   res: Response
 ) => {
   try {
-    const { studentId } = req.params;
+    const { id } = req.user;
 
     const reviewSessions = await ReviewSession.find({
-      "document.authorId": studentId
-    }).populate("document");
+      document: {
+        $in: await Document.find({ author: id }).distinct("_id")
+      }
+    })
+      .populate("document")
+      .populate({
+        path: "document",
+        populate: {
+          path: "author"
+        }
+      });
 
-    res.json({ success: true, reviewSessions });
+    res.json({ success: true, data: reviewSessions });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

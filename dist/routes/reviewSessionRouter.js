@@ -17,5 +17,8 @@ ReviewSession_Controller_1.Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT);
 reviewSessionRouter.get("/", require_auth_1.AuthenticateUser, 
 // hasPermission("getReviewSession"),
 ReviewSession_Controller_1.Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET);
+reviewSessionRouter.get("/student/myReview", require_auth_1.AuthenticateUser, 
+// hasPermission("getReviewSession"),
+ReviewSession_Controller_1.Fetch__REVIEWSESSION_FOR_STUDENT__GET);
 exports.default = reviewSessionRouter;
 //# sourceMappingURL=reviewSessionRouter.js.map

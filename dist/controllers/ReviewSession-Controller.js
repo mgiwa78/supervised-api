@@ -38,14 +38,12 @@ const COMMENT_ON__REVIEWSESSION__POST = (req, res) => __awaiter(void 0, void 0, 
     try {
         const { comment } = req.body;
         const { reviewSessionId } = req.params;
-        console.log(req.user);
         const newComment = new comment_1.Comment({
             content: comment,
             author: req.user.id
         });
         newComment.save();
         // const s = await Comment.findById("65310acd9dec635b7ba9794e");
-        // console.log(s);
         yield reviewSession_1.ReviewSession.updateOne({ _id: reviewSessionId }, {
             $push: { comments: newComment._id }
         });
@@ -71,9 +69,15 @@ exports.COMMENT_ON__REVIEWSESSION__POST = COMMENT_ON__REVIEWSESSION__POST;
 const Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.user;
-        console.log("firssaddat");
         const reviewSessions = yield reviewSession_1.ReviewSession.find({
             supervisors: { $in: id }
+        })
+            .populate("document")
+            .populate({
+            path: "document",
+            populate: {
+                path: "author"
+            }
         })
             .populate("comments")
             .populate({
@@ -82,7 +86,6 @@ const Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0
                 path: "author"
             }
         });
-        console.log("firssaasdsadadefddat");
         res.json({ success: true, data: reviewSessions });
     }
     catch (error) {
@@ -107,7 +110,6 @@ const Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = (req, res) => __awaiter(void 
             }
         })
             .exec();
-        console.log(UpreviewSession);
         res.json({ success: true, data: reviewSession });
     }
     catch (error) {
@@ -126,7 +128,6 @@ const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0,
             });
         }
         const reviewSession = yield reviewSession_1.ReviewSession.findOne({
-            supervisors: { $in: id },
             _id: reviewSessionId
         })
             .populate("comments")
@@ -151,13 +152,23 @@ const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0,
 exports.Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET;
 const Fetch__REVIEWSESSION_FOR_STUDENT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { studentId } = req.params;
+        const { id } = req.user;
         const reviewSessions = yield reviewSession_1.ReviewSession.find({
-            "document.authorId": studentId
-        }).populate("document");
-        res.json({ success: true, reviewSessions });
+            document: {
+                $in: yield document_1.Document.find({ author: id }).distinct("_id")
+            }
+        })
+            .populate("document")
+            .populate({
+            path: "document",
+            populate: {
+                path: "author"
+            }
+        });
+        res.json({ success: true, data: reviewSessions });
     }
     catch (error) {
+        console.log(error);
         res.status(500).json({ success: false, message: error.message });
     }
 });
