@@ -45,6 +45,19 @@ export const Fetch__DOCUMENTS__GET = async (req: Request, res: Response) => {
   }
 };
 
+export const Fetch__DOCUMENTS_FOR_PROJECT__GET = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { projectId } = req.params;
+    const documents: TDocument[] = await Document.find({ project: projectId });
+    res.json({ status: "success", data: documents });
+  } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
+
 export const Assign_Document_To__Supervisor__POST = async (
   req: Request,
   res: Response
@@ -131,13 +144,14 @@ export const Fetch__MY_DOCUMENT__GET = async (req: Request, res: Response) => {
 };
 
 export const Create__DOCUMENT__POST = async (req: Request, res: Response) => {
-  const { title, content, description } = req.body;
+  const { title, content, description, projectId } = req.body;
   try {
     const document: DocumentDoc = new Document({
       title,
       content,
       description,
-      author: req.user.id
+      author: req.user.id,
+      project: projectId
     });
 
     await document.save();

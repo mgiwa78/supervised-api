@@ -33,7 +33,7 @@ const corsOptions = {
 };
 
 app.use("public/uploads/documents", express.static("public/uploads/documents"));
-app.use("uploads/documents", express.static("uploads/documents"));
+app.use("uploads/docs", express.static("uploads/docs"));
 
 app.use(cors(corsOptions));
 app.set("trust proxy", true);

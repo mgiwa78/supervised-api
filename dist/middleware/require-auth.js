@@ -84,7 +84,9 @@ const AuthenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // );
         // const perms = await Permissions.find();
         if (userData) {
-            req.user = Object.assign({ id: decoded.user._id, roles: userData.roles.map((e) => e.name), permissions }, userData);
+            req.user = Object.assign(Object.assign({ id: decoded.user._id, roles: userData.roles.map((e) => e.name), permissions }, (typeof userData.department !== typeof "TDepartment" && {
+                department: userData.department
+            })), userData);
         }
         else {
             return res.status(401).json({ status: "error", error: "User Not Found" });

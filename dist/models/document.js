@@ -29,7 +29,12 @@ const mongoose_1 = __importStar(require("mongoose"));
 const DocumentSchema = new mongoose_1.default.Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
+    status: { type: String, required: false, default: "Backlog" },
     description: { type: String, required: true },
+    project: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "Project"
+    },
     supervisors: [
         {
             type: mongoose_1.default.Schema.Types.ObjectId,

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Fetch__REVIEWSESSION_FOR_STUDENT__GET = exports.Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = exports.Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = exports.Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = exports.COMMENT_ON__REVIEWSESSION__POST = exports.INITIALIZE_A_REVIEWSESSION__POST = void 0;
+exports.Fetch__REVIEWSESSION_FOR_STUDENT__GET = exports.Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET = exports.Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = exports.Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = exports.Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET = exports.COMMENT_ON__REVIEWSESSION__POST = exports.INITIALIZE_A_REVIEWSESSION__POST = void 0;
 const document_1 = require("../models/document");
 const reviewSession_1 = require("../models/reviewSession");
 const comment_1 = require("../models/comment");
@@ -119,7 +119,6 @@ const Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = (req, res) => __awaiter(void 
 exports.Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT = Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT;
 const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.user;
         const { reviewSessionId } = req.params;
         if (!reviewSessionId) {
             return res.status(404).json({
@@ -129,13 +128,6 @@ const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0,
         }
         const reviewSession = yield reviewSession_1.ReviewSession.findOne({
             _id: reviewSessionId
-        })
-            .populate("comments")
-            .populate({
-            path: "comments",
-            populate: {
-                path: "author"
-            }
         });
         if (!reviewSession) {
             return res.status(404).json({
@@ -150,6 +142,45 @@ const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0,
     }
 });
 exports.Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET;
+const Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { documentId } = req.params;
+        if (!documentId) {
+            return res.status(404).json({
+                success: true,
+                message: "Document Id is required"
+            });
+        }
+        const reviewSession = yield reviewSession_1.ReviewSession.findOne({
+            document: documentId
+        })
+            .populate("comments")
+            .populate({
+            path: "comments",
+            populate: {
+                path: "author"
+            }
+        });
+        if (!reviewSession) {
+            const document = yield document_1.Document.findById(documentId);
+            if (!document)
+                return res.status(404).json({
+                    success: false,
+                    message: "Invalid Document Id"
+                });
+            const reviewSession = yield reviewSession_1.ReviewSession.create({
+                document: documentId,
+                content: document.content
+            });
+            return res.json({ success: true, data: reviewSession });
+        }
+        return res.json({ success: true, data: reviewSession });
+    }
+    catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+exports.Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET = Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET;
 const Fetch__REVIEWSESSION_FOR_STUDENT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.user;

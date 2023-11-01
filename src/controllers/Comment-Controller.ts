@@ -3,16 +3,22 @@ import { Role, RoleDoc } from "../models/role";
 import { Permission, TPermission } from "../models/permission";
 import { User } from "../models/user";
 import { Comment } from "../models/comment";
+import { ReviewSession } from "../models/reviewSession";
 
 export const Delete__COMMENT__DELETE = async (req: Request, res: Response) => {
   try {
-    const { commentID } = req.params;
+    const { commentID, reviewSessionId } = req.params;
+
+    const reviewSession = await ReviewSession.findByIdAndUpdate(
+      reviewSessionId,
+      { $pull: { comments: commentID } },
+      { new: true }
+    );
+    reviewSession.save();
 
     await Comment.findByIdAndDelete(commentID);
 
-    const allComments = await Comment.find().populate("author");
-
-    return res.json({ status: "success", data: allComments });
+    return res.json({ status: "success", data: reviewSession.comments });
   } catch (error) {
     console.error("Error fetching roles:", error);
     return res

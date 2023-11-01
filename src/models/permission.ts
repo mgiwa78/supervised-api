@@ -32,6 +32,8 @@ const Permission: PermissionModel = (mongoose.models?.Permission ||
     "Permission",
     permissionSchema
   )) as PermissionModel;
+
 export { Permission };
+
 // export default mongoose.models?.Permission ||
 //   mongoose.model("Permission", departmentSchema);

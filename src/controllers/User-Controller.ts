@@ -35,9 +35,6 @@ export const Fetch__USERS__GET = async (req: Request, res: Response) => {
           path: "permissions"
         }
       });
-
-    req.user.permissions.types["getAllUsers"];
-
     if (req.user.permissions.types["getAllUsers"]) {
       await Promise.all(
         req.user.permissions.types["getAllUsers"].map(async (e) => {
@@ -88,6 +85,22 @@ export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
     return res.json({ status: "success", data: students });
   } catch (error) {
     console.error("Error fetching all students:", error);
+    return res
+      .status(500)
+      .json({ status: "error", error: "Internal server error" });
+  }
+};
+export const Fetch__USER__GET = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId)
+      .populate("department")
+      .populate("roles")
+      .exec();
+
+    return res.json({ status: "success", data: user });
+  } catch (error) {
+    console.error("Error fetching user:", error);
     return res
       .status(500)
       .json({ status: "error", error: "Internal server error" });

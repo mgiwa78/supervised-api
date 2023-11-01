@@ -35,6 +35,11 @@ const userSchema = new mongoose_1.default.Schema({
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    supervisor: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+    },
     department: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "Department"

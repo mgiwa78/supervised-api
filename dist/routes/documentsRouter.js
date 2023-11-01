@@ -12,6 +12,7 @@ documentRouter.get("/", require_auth_1.AuthenticateUser, Document_Controller_1.F
 documentRouter.post("/convertToWord", Document_Controller_1.CONVERT_CONTENT_TO_WORD_GET);
 documentRouter.post("/assign-supervisor/:documentId", Document_Controller_1.Assign_Document_To__Supervisor__POST);
 documentRouter.get("/", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchOwnDocuments"), Document_Controller_1.Fetch__MY_DOCUMENTS__GET);
+documentRouter.get("/project/:projectId", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchAssignedDocuments"), Document_Controller_1.Fetch__DOCUMENTS_FOR_PROJECT__GET);
 documentRouter.get("/assigned", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchAssignedDocuments"), Document_Controller_1.Fetch__Assigned_DOCUMENTS__GET);
 documentRouter.get("/assigned/:documentId", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchAssignedDocument"), Document_Controller_1.Fetch__Assigned_DOCUMENT__GET);
 documentRouter.get("/:documentID", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("fetchOwnDocument"), Document_Controller_1.Fetch__MY_DOCUMENT__GET);

@@ -29,6 +29,7 @@ export interface TUser {
   firstName: string;
   lastName: string;
   email: string;
+  supervisor: string;
   password: string;
   department: string | TDepartment;
   roles: Array<TRole>;
@@ -40,7 +41,7 @@ declare global {
       user?: {
         email: string;
         id: string;
-        organization?: string;
+        department?: string;
         firstName: string;
         contactNumber?: string;
         address?: string;
@@ -62,12 +63,13 @@ interface UserModel extends mongoose.Model<UserDoc> {
   build(attrs: TUser): UserDoc;
 }
 
-interface UserDoc extends mongoose.Document {
+export interface UserDoc extends mongoose.Document {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  department: string | TDepartment;
+  department: string;
+  supervisor: string | TUser;
   roles: Array<TRole>;
 }
 
@@ -76,6 +78,11 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  supervisor: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User"
+  },
   department: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Department"

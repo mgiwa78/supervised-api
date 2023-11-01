@@ -141,7 +141,6 @@ export const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = async (
   res: Response
 ) => {
   try {
-    const { id } = req.user;
     const { reviewSessionId } = req.params;
 
     if (!reviewSessionId) {
@@ -153,6 +152,36 @@ export const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = async (
 
     const reviewSession = await ReviewSession.findOne({
       _id: reviewSessionId
+    });
+
+    if (!reviewSession) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Review-session ID"
+      });
+    }
+
+    res.json({ success: true, data: reviewSession });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+export const Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { documentId } = req.params;
+
+    if (!documentId) {
+      return res.status(404).json({
+        success: true,
+        message: "Document Id is required"
+      });
+    }
+
+    const reviewSession = await ReviewSession.findOne({
+      document: documentId
     })
       .populate("comments")
       .populate({
@@ -163,13 +192,22 @@ export const Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET = async (
       });
 
     if (!reviewSession) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid Review-session ID"
+      const document = await Document.findById(documentId);
+
+      if (!document)
+        return res.status(404).json({
+          success: false,
+          message: "Invalid Document Id"
+        });
+
+      const reviewSession = await ReviewSession.create({
+        document: documentId,
+        content: document.content
       });
+      return res.json({ success: true, data: reviewSession });
     }
 
-    res.json({ success: true, data: reviewSession });
+    return res.json({ success: true, data: reviewSession });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

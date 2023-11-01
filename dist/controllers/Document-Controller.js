@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Update__DOCUMENT__PUT = exports.Create__DOCUMENT__POST = exports.Fetch__MY_DOCUMENT__GET = exports.Fetch__Assigned_DOCUMENT__GET = exports.Fetch__Assigned_DOCUMENTS__GET = exports.Fetch__MY_DOCUMENTS__GET = exports.Assign_Document_To__Supervisor__POST = exports.Fetch__DOCUMENTS__GET = exports.CONVERT_CONTENT_TO_WORD_GET = void 0;
+exports.Update__DOCUMENT__PUT = exports.Create__DOCUMENT__POST = exports.Fetch__MY_DOCUMENT__GET = exports.Fetch__Assigned_DOCUMENT__GET = exports.Fetch__Assigned_DOCUMENTS__GET = exports.Fetch__MY_DOCUMENTS__GET = exports.Assign_Document_To__Supervisor__POST = exports.Fetch__DOCUMENTS_FOR_PROJECT__GET = exports.Fetch__DOCUMENTS__GET = exports.CONVERT_CONTENT_TO_WORD_GET = void 0;
 const document_1 = require("../models/document");
 const CONVERT_CONTENT_TO_WORD_GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -47,6 +47,17 @@ const Fetch__DOCUMENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.Fetch__DOCUMENTS__GET = Fetch__DOCUMENTS__GET;
+const Fetch__DOCUMENTS_FOR_PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { projectId } = req.params;
+        const documents = yield document_1.Document.find({ project: projectId });
+        res.json({ status: "success", data: documents });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Fetch__DOCUMENTS_FOR_PROJECT__GET = Fetch__DOCUMENTS_FOR_PROJECT__GET;
 const Assign_Document_To__Supervisor__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { documentId } = req.params;
     const { supervisor } = req.body; // Assuming you send supervisorId in the request body
@@ -123,13 +134,14 @@ const Fetch__MY_DOCUMENT__GET = (req, res) => __awaiter(void 0, void 0, void 0, 
 });
 exports.Fetch__MY_DOCUMENT__GET = Fetch__MY_DOCUMENT__GET;
 const Create__DOCUMENT__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, content, description } = req.body;
+    const { title, content, description, projectId } = req.body;
     try {
         const document = new document_1.Document({
             title,
             content,
             description,
-            author: req.user.id
+            author: req.user.id,
+            project: projectId
         });
         yield document.save();
         res.json({ status: "success", data: document });

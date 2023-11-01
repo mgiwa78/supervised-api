@@ -4,7 +4,8 @@ import {
   Update__USER__PUT,
   Update__OWN_USER__PUT,
   Delete__USER__DELETE,
-  Create__USER__POST
+  Create__USER__POST,
+  Fetch__USER__GET
 } from "../controllers/User-Controller";
 import { AuthenticateUser } from "../middleware/require-auth";
 import { hasPermission } from "../middleware/has-permission";
@@ -38,6 +39,12 @@ router.get(
   AuthenticateUser,
   hasPermission("getAllUsers"),
   Fetch__USERS__GET
+);
+router.get(
+  "/:userId",
+  AuthenticateUser,
+  hasPermission("getAllUsers"),
+  Fetch__USER__GET
 );
 
 router.put(

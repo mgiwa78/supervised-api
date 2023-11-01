@@ -6,6 +6,10 @@ import { Delete__COMMENT__DELETE } from "../controllers/Comment-Controller";
 
 const commentsRouter = Router();
 
-commentsRouter.delete("/:commentID", AuthenticateUser, Delete__COMMENT__DELETE);
+commentsRouter.delete(
+  "/:commentID/:reviewSessionId",
+  AuthenticateUser,
+  Delete__COMMENT__DELETE
+);
 
 export default commentsRouter;

@@ -3,18 +3,21 @@ import { Router } from "express";
 import { body } from "express-validator";
 
 import { AuthenticateUser } from "../middleware/require-auth";
+
 import {
   Assign_Document_To__Supervisor__POST,
   CONVERT_CONTENT_TO_WORD_GET,
   Create__DOCUMENT__POST,
   Fetch__Assigned_DOCUMENTS__GET,
   Fetch__Assigned_DOCUMENT__GET,
+  Fetch__DOCUMENTS_FOR_PROJECT__GET,
   Fetch__DOCUMENTS__GET,
   Fetch__MY_DOCUMENTS__GET,
   Fetch__MY_DOCUMENT__GET,
   Update__DOCUMENT__PUT
 } from "../controllers/Document-Controller";
 import { hasPermission } from "../middleware/has-permission";
+
 // import { uploadDocumentForConvertion } from "../middleware/multer";
 
 const path = require("path");
@@ -37,6 +40,13 @@ documentRouter.get(
 );
 
 documentRouter.get(
+  "/project/:projectId",
+  AuthenticateUser,
+  hasPermission("fetchAssignedDocuments"),
+  Fetch__DOCUMENTS_FOR_PROJECT__GET
+);
+
+documentRouter.get(
   "/assigned",
   AuthenticateUser,
   hasPermission("fetchAssignedDocuments"),
@@ -55,6 +65,7 @@ documentRouter.get(
   hasPermission("fetchOwnDocument"),
   Fetch__MY_DOCUMENT__GET
 );
+
 documentRouter.post(
   "/",
   AuthenticateUser,

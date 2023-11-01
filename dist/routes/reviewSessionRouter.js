@@ -11,6 +11,9 @@ reviewSessionRouter.post("/initialize", ReviewSession_Controller_1.INITIALIZE_A_
 reviewSessionRouter.get("/:reviewSessionId", require_auth_1.AuthenticateUser, 
 // hasPermission("getReviewSession"),
 ReviewSession_Controller_1.Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET);
+reviewSessionRouter.get("/byDocument/:documentId", require_auth_1.AuthenticateUser, 
+// hasPermission("getReviewSession"),
+ReviewSession_Controller_1.Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET);
 reviewSessionRouter.put("/:reviewSessionId", require_auth_1.AuthenticateUser, 
 // hasPermission("getReviewSession"),
 ReviewSession_Controller_1.Update__REVIEWSESSIONS_FOR_SUPERVISOR__PUT);

@@ -5,6 +5,7 @@ import { body } from "express-validator";
 import { AuthenticateUser } from "../middleware/require-auth";
 import {
   COMMENT_ON__REVIEWSESSION__POST,
+  Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET,
   Fetch__REVIEWSESSIONS_FOR_SUPERVISOR__GET,
   Fetch__REVIEWSESSION_FOR_STUDENT__GET,
   Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET,
@@ -29,6 +30,12 @@ reviewSessionRouter.get(
   AuthenticateUser,
   // hasPermission("getReviewSession"),
   Fetch__REVIEWSESSION_FOR_SUPERVISOR__GET
+);
+reviewSessionRouter.get(
+  "/byDocument/:documentId",
+  AuthenticateUser,
+  // hasPermission("getReviewSession"),
+  Fetch_BY_DOCUMENT_ID_REVIEWSESSION_FOR_SUPERVISOR__GET
 );
 reviewSessionRouter.put(
   "/:reviewSessionId",

@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { JWT_SECRET } from "../__CONSTANTS__";
 import { User } from "../models";
 import { Permission, TPermission } from "../models/permission";
+import { TDepartment } from "../models/department";
 import { Role, TRole } from "../models/role";
 
 // const Permission = require("../models/permission");
@@ -104,6 +105,9 @@ export const AuthenticateUser = async (
         id: decoded.user._id,
         roles: userData.roles.map((e) => e.name),
         permissions,
+        ...(typeof userData.department !== typeof "TDepartment" && {
+          department: userData.department
+        }),
         ...userData
       };
     } else {

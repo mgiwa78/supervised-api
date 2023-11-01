@@ -10,6 +10,9 @@ import permissionsRouter from "./permissionsRoute";
 import documentRouter from "./documentsRouter";
 import reviewSessionRouter from "./reviewSessionRouter";
 import commentsRouter from "./commentsRouter";
+import projectRouter from "./projectsRouter";
+import proposalRouter from "./proposalRouter";
+import fileRouter from "./fileRouter";
 
 let rootRouter = Router();
 
@@ -23,9 +26,12 @@ rootRouter.use("/auth", authRouter);
 rootRouter.use("/reviewSessions", reviewSessionRouter);
 rootRouter.use("/roles", rolesRouter);
 rootRouter.use("/comments", commentsRouter);
+rootRouter.use("/projects", projectRouter);
 rootRouter.use("/users", userRouter);
 rootRouter.use("/departments", departmentRouter);
 rootRouter.use("/documents", documentRouter);
+rootRouter.use("/proposals", proposalRouter);
 rootRouter.use("/permissions", permissionsRouter);
+rootRouter.use("/files", fileRouter);
 
 export default rootRouter;

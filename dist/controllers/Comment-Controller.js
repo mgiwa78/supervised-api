@@ -11,12 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Delete__COMMENT__DELETE = void 0;
 const comment_1 = require("../models/comment");
+const reviewSession_1 = require("../models/reviewSession");
 const Delete__COMMENT__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { commentID } = req.params;
+        const { commentID, reviewSessionId } = req.params;
+        const reviewSession = yield reviewSession_1.ReviewSession.findByIdAndUpdate(reviewSessionId, { $pull: { comments: commentID } }, { new: true });
+        reviewSession.save();
         yield comment_1.Comment.findByIdAndDelete(commentID);
-        const allComments = yield comment_1.Comment.find().populate("author");
-        return res.json({ status: "success", data: allComments });
+        return res.json({ status: "success", data: reviewSession.comments });
     }
     catch (error) {
         console.error("Error fetching roles:", error);
