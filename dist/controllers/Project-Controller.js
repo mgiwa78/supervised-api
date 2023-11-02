@@ -65,7 +65,6 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
         const user = req.user;
         const projects = yield project_1.Project.find().populate("student").populate("files");
         const assigned = projects.map((project) => {
-            console.log(project.student.supervisor.toString(), user.id);
             return (project.student.supervisor.toString() === user.id && project);
         });
         res.json({ status: "success", data: assigned });

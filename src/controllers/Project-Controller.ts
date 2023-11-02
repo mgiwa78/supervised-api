@@ -70,7 +70,6 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
     const projects = await Project.find().populate("student").populate("files");
 
     const assigned = projects.map((project: any) => {
-      console.log(project.student.supervisor.toString() as ObjectId, user.id);
       return (
         (project.student.supervisor.toString() as string) === user.id && project
       );
