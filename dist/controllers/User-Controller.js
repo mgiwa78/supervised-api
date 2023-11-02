@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Delete__USER__DELETE = exports.Update__OWN_USER__PUT = exports.Create__USER__POST = exports.Update__USER__PUT = exports.Fetch__USER__GET = exports.Fetch__STUDENTS__GET = exports.Fetch__SUPERVISORS__GET = exports.Fetch__USERS__GET = exports.Fetch__ORGANIZATIONS_USERS__GET = void 0;
+exports.Delete__USER__DELETE = exports.Update__OWN_USER__PUT = exports.Create__USER__POST = exports.Update__USER__PUT = exports.Fetch__USER__GET = exports.Fetch__STUDENTS_FOR_DEPT____GET = exports.Fetch__STUDENTS__GET = exports.Fetch__SUPERVISORS_FOR_DEPT__GET = exports.Fetch__USERS__GET = exports.Fetch__ORGANIZATIONS_USERS__GET = void 0;
 const user_1 = require("../models/user");
 const password_1 = require("../services/password");
 const role_1 = require("../models/role");
@@ -71,12 +71,13 @@ const Fetch__USERS__GET = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.Fetch__USERS__GET = Fetch__USERS__GET;
-const Fetch__SUPERVISORS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const Fetch__SUPERVISORS_FOR_DEPT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.user);
         const supervisorRole = yield role_1.Role.findOne({ name: "Supervisor" });
         const supervisors = yield user_1.User.find({
-            roles: { $in: [supervisorRole._id] }
+            roles: { $in: [supervisorRole._id] },
+            department: req.user.department
         })
             .populate("department")
             .populate("roles")
@@ -90,7 +91,7 @@ const Fetch__SUPERVISORS__GET = (req, res) => __awaiter(void 0, void 0, void 0, 
             .json({ status: "error", error: "Internal server error" });
     }
 });
-exports.Fetch__SUPERVISORS__GET = Fetch__SUPERVISORS__GET;
+exports.Fetch__SUPERVISORS_FOR_DEPT__GET = Fetch__SUPERVISORS_FOR_DEPT__GET;
 const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.user);
@@ -109,6 +110,27 @@ const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.Fetch__STUDENTS__GET = Fetch__STUDENTS__GET;
+const Fetch__STUDENTS_FOR_DEPT____GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.user);
+        const studentRole = yield role_1.Role.findOne({ name: "Student" });
+        const students = yield user_1.User.find({
+            roles: { $in: [studentRole._id] },
+            department: req.user.department
+        })
+            .populate("department")
+            .populate("roles")
+            .exec();
+        return res.json({ status: "success", data: students });
+    }
+    catch (error) {
+        console.error("Error fetching all students:", error);
+        return res
+            .status(500)
+            .json({ status: "error", error: "Internal server error" });
+    }
+});
+exports.Fetch__STUDENTS_FOR_DEPT____GET = Fetch__STUDENTS_FOR_DEPT____GET;
 const Fetch__USER__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;

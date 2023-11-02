@@ -6,8 +6,9 @@ import {
   Delete__USER__DELETE,
   Create__USER__POST,
   Fetch__USER__GET,
-  Fetch__SUPERVISORS__GET,
-  Fetch__STUDENTS__GET
+  Fetch__STUDENTS__GET,
+  Fetch__SUPERVISORS_FOR_DEPT__GET,
+  Fetch__STUDENTS_FOR_DEPT____GET
 } from "../controllers/User-Controller";
 import { AuthenticateUser } from "../middleware/require-auth";
 import { hasPermission } from "../middleware/has-permission";
@@ -46,13 +47,13 @@ router.get(
   "/supervisors",
   AuthenticateUser,
   // hasPermission("getAllUsers"),
-  Fetch__SUPERVISORS__GET
+  Fetch__SUPERVISORS_FOR_DEPT__GET
 );
 router.get(
   "/students",
   AuthenticateUser,
   // hasPermission("getAllUsers"),
-  Fetch__STUDENTS__GET
+  Fetch__STUDENTS_FOR_DEPT____GET
 );
 router.get(
   "/:userId",
