@@ -5,7 +5,9 @@ import {
   Update__OWN_USER__PUT,
   Delete__USER__DELETE,
   Create__USER__POST,
-  Fetch__USER__GET
+  Fetch__USER__GET,
+  Fetch__SUPERVISORS__GET,
+  Fetch__STUDENTS__GET
 } from "../controllers/User-Controller";
 import { AuthenticateUser } from "../middleware/require-auth";
 import { hasPermission } from "../middleware/has-permission";
@@ -39,6 +41,18 @@ router.get(
   AuthenticateUser,
   hasPermission("getAllUsers"),
   Fetch__USERS__GET
+);
+router.get(
+  "/supervisors",
+  AuthenticateUser,
+  // hasPermission("getAllUsers"),
+  Fetch__SUPERVISORS__GET
+);
+router.get(
+  "/students",
+  AuthenticateUser,
+  // hasPermission("getAllUsers"),
+  Fetch__STUDENTS__GET
 );
 router.get(
   "/:userId",

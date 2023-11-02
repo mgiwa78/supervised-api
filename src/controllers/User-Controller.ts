@@ -72,6 +72,26 @@ export const Fetch__USERS__GET = async (req: Request, res: Response) => {
   }
 };
 
+export const Fetch__SUPERVISORS__GET = async (req: Request, res: Response) => {
+  try {
+    console.log(req.user);
+    const supervisorRole = await Role.findOne({ name: "Supervisor" });
+    const supervisors = await User.find({
+      roles: { $in: [supervisorRole._id] }
+    })
+      .populate("department")
+      .populate("roles")
+      .exec();
+
+    return res.json({ status: "success", data: supervisors });
+  } catch (error) {
+    console.error("Error fetching all Supervisor:", error);
+    return res
+      .status(500)
+      .json({ status: "error", error: "Internal server error" });
+  }
+};
+
 export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
   try {
     console.log(req.user);
@@ -81,7 +101,6 @@ export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
       .populate("roles")
       .exec();
 
-    console.log(students);
     return res.json({ status: "success", data: students });
   } catch (error) {
     console.error("Error fetching all students:", error);
