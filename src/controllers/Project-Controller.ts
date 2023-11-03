@@ -69,9 +69,10 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
     const user = req.user;
     const projects = await Project.find().populate("student").populate("files");
 
-    const assigned = projects.map((project: any) => {
+    const assigned = projects?.map((project: any) => {
       return (
-        (project.student.supervisor.toString() as string) === user.id && project
+        (project.student?.supervisor.toString() as string) === user.id &&
+        project
       );
     });
 
