@@ -38,6 +38,7 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
     res.status(500).json({ status: "error", error: error.message });
   }
 };
+
 export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
   try {
     const documents: TProject[] = await Project.find().populate("files");
@@ -46,6 +47,7 @@ export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", error: error.message });
   }
 };
+
 export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
   try {
     const { projectId } = req.params;
@@ -70,8 +72,11 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
     const projects = await Project.find().populate("student").populate("files");
 
     const assigned = projects?.map((project: any) => {
+      console.log(project.student.supervisor);
+
       return (
-        (project.student?.supervisor.toString() as string) === user.id &&
+        project.student?.supervisor &&
+        project.student?.supervisor?.toString() === user.id &&
         project
       );
     });
@@ -102,6 +107,7 @@ export const Create__PROJECTS__POST = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", message: error.message });
   }
 };
+
 export const Update__PROJECTS__PUT = async (req: Request, res: Response) => {
   const { title, methodology, type, description } = req.body;
   const { projectID } = req.params;
