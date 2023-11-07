@@ -14,7 +14,6 @@ export const Fetch__USER__PROJECTS__GET = async (
 ) => {
   try {
     const userId = req.user.id;
-    console.log(userId);
 
     const documents: TProject[] = await Project.find({
       student: userId
@@ -57,7 +56,6 @@ export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
 export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
   try {
     const { projectId } = req.params;
-    console.log("first  documents");
 
     const project: TProject[] = await Project.findById(projectId)
       .populate("student")
@@ -82,8 +80,6 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
       .populate("status");
 
     const assigned = projects?.map((project: any) => {
-      console.log(project.student.supervisor);
-
       return (
         project.student?.supervisor &&
         project.student?.supervisor?.toString() === user.id &&
@@ -119,6 +115,38 @@ export const Create__PROJECTS__POST = async (req: Request, res: Response) => {
 };
 
 export const Update__PROJECTS__PUT = async (req: Request, res: Response) => {
+  const { title, methodology, type, description } = req.body;
+  const { projectID } = req.params;
+  try {
+    if (projectID) {
+      const project: ProjectDoc = await Project.findOne({
+        _id: req.params.projectID,
+        author: req.user.id
+      }).populate("files");
+
+      if (!project) {
+        return res
+          .status(400)
+          .json({ status: "error", message: "Invalid Project ID" });
+      }
+
+      project.title = title;
+      project.methodology = methodology;
+      project.description = description;
+
+      await project.save();
+
+      return res.json({ status: "success", data: project });
+    }
+
+    return res
+      .status(400)
+      .json({ status: "error", message: "Invalid DocumentID" });
+  } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
+export const Delete__FILE__DELETE = async (req: Request, res: Response) => {
   const { title, methodology, type, description } = req.body;
   const { projectID } = req.params;
   try {

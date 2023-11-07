@@ -9,12 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Update__PROJECTS__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
+exports.Delete__FILE__DELETE = exports.Update__PROJECTS__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
 const project_1 = require("../models/project");
 const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
-        console.log(userId);
         const documents = yield project_1.Project.find({
             student: userId
         }).populate("status");
@@ -55,7 +54,6 @@ exports.Fetch__ALL_PROJECTS__GET = Fetch__ALL_PROJECTS__GET;
 const Fetch__PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { projectId } = req.params;
-        console.log("first  documents");
         const project = yield project_1.Project.findById(projectId)
             .populate("student")
             .populate("files")
@@ -76,7 +74,6 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
             .populate("status");
         const assigned = projects === null || projects === void 0 ? void 0 : projects.map((project) => {
             var _a, _b, _c;
-            console.log(project.student.supervisor);
             return (((_a = project.student) === null || _a === void 0 ? void 0 : _a.supervisor) &&
                 ((_c = (_b = project.student) === null || _b === void 0 ? void 0 : _b.supervisor) === null || _c === void 0 ? void 0 : _c.toString()) === user.id &&
                 project);
@@ -137,4 +134,33 @@ const Update__PROJECTS__PUT = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.Update__PROJECTS__PUT = Update__PROJECTS__PUT;
+const Delete__FILE__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, methodology, type, description } = req.body;
+    const { projectID } = req.params;
+    try {
+        if (projectID) {
+            const project = yield project_1.Project.findOne({
+                _id: req.params.projectID,
+                author: req.user.id
+            }).populate("files");
+            if (!project) {
+                return res
+                    .status(400)
+                    .json({ status: "error", message: "Invalid Project ID" });
+            }
+            project.title = title;
+            project.methodology = methodology;
+            project.description = description;
+            yield project.save();
+            return res.json({ status: "success", data: project });
+        }
+        return res
+            .status(400)
+            .json({ status: "error", message: "Invalid DocumentID" });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Delete__FILE__DELETE = Delete__FILE__DELETE;
 //# sourceMappingURL=Project-Controller.js.map

@@ -98,7 +98,6 @@ export const Fetch__SUPERVISORS_FOR_DEPT__GET = async (
 
 export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
     const studentRole = await Role.findOne({ name: "Student" });
     const students = await User.find({ roles: { $in: [studentRole._id] } })
       .populate("department")
@@ -118,7 +117,6 @@ export const Fetch__STUDENTS_FOR_DEPT____GET = async (
   res: Response
 ) => {
   try {
-    console.log(req.user);
     const studentRole = await Role.findOne({ name: "Student" });
 
     const students = await User.find({
@@ -189,16 +187,11 @@ export const Create__USER__POST = async (req: Request, res: Response) => {
     if (req.body.rolesState) {
       const allRoles = await Role.find();
       allRoles.forEach((r: any) => {
-        console.log(req.body.rolesState);
-        console.log(r._id);
-        console.log(req.body.rolesState[r._id]);
-
         if (req.body.rolesState[r._id] === true) {
           roles.push(r._id);
         }
       });
     }
-    console.log(roles);
     if (ifuser) {
       return res
         .status(404)

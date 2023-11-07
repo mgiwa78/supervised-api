@@ -5,6 +5,7 @@ import { body } from "express-validator";
 import { AuthenticateUser } from "../middleware/require-auth";
 import {
   Create__PROJECTS__POST,
+  Delete__FILE__DELETE,
   Fetch__ALL_PROJECTS__GET,
   Fetch__PROJECT_ASSIGNED__GET,
   Fetch__PROJECT__GET,
@@ -24,6 +25,11 @@ projectRouter.get(
   "/supervisor/assigned",
   AuthenticateUser,
   Fetch__PROJECT_ASSIGNED__GET
+);
+projectRouter.get(
+  "/:projectId/:fileId",
+  AuthenticateUser,
+  Delete__FILE__DELETE
 );
 
 projectRouter.get(

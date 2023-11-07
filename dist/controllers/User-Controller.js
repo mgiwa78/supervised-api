@@ -94,7 +94,6 @@ const Fetch__SUPERVISORS_FOR_DEPT__GET = (req, res) => __awaiter(void 0, void 0,
 exports.Fetch__SUPERVISORS_FOR_DEPT__GET = Fetch__SUPERVISORS_FOR_DEPT__GET;
 const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.user);
         const studentRole = yield role_1.Role.findOne({ name: "Student" });
         const students = yield user_1.User.find({ roles: { $in: [studentRole._id] } })
             .populate("department")
@@ -112,7 +111,6 @@ const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.Fetch__STUDENTS__GET = Fetch__STUDENTS__GET;
 const Fetch__STUDENTS_FOR_DEPT____GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.user);
         const studentRole = yield role_1.Role.findOne({ name: "Student" });
         const students = yield user_1.User.find({
             roles: { $in: [studentRole._id] },
@@ -176,15 +174,11 @@ const Create__USER__POST = (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (req.body.rolesState) {
             const allRoles = yield role_1.Role.find();
             allRoles.forEach((r) => {
-                console.log(req.body.rolesState);
-                console.log(r._id);
-                console.log(req.body.rolesState[r._id]);
                 if (req.body.rolesState[r._id] === true) {
                     roles.push(r._id);
                 }
             });
         }
-        console.log(roles);
         if (ifuser) {
             return res
                 .status(404)
