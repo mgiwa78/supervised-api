@@ -4,39 +4,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Assignment = void 0;
+exports.Workflow = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const assignmentSchema = new mongoose_1.default.Schema({
-    student: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    supervisor: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    project: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: "Project",
-        required: true
-    },
-    assignmentDate: {
-        type: Date,
-        default: Date.now
-    },
-    dueDate: {
-        type: Date,
-        required: true
-    },
-    status: {
+const WorkflowSchema = new mongoose_1.default.Schema({
+    title: {
         type: String,
-        enum: ["Pending", "Completed"],
-        default: "Pending"
+        required: true
+    },
+    color: {
+        type: String,
+        required: true
+    },
+    order: {
+        type: String
+    },
+    default: {
+        type: String
     }
 });
-const Assignment = (((_a = mongoose_1.default.models) === null || _a === void 0 ? void 0 : _a.Assignment) ||
-    mongoose_1.default.model("Assignment", assignmentSchema));
-exports.Assignment = Assignment;
+const Workflow = (((_a = mongoose_1.default.models) === null || _a === void 0 ? void 0 : _a.Workflow) ||
+    mongoose_1.default.model("Workflow", WorkflowSchema));
+exports.Workflow = Workflow;
 //# sourceMappingURL=workflow.js.map

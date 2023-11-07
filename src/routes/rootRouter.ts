@@ -13,6 +13,7 @@ import commentsRouter from "./commentsRouter";
 import projectRouter from "./projectsRouter";
 import proposalRouter from "./proposalRouter";
 import fileRouter from "./fileRouter";
+import workflowRouter from "./workflowRouter";
 
 let rootRouter = Router();
 
@@ -30,6 +31,7 @@ rootRouter.use("/projects", projectRouter);
 rootRouter.use("/users", userRouter);
 rootRouter.use("/departments", departmentRouter);
 rootRouter.use("/documents", documentRouter);
+rootRouter.use("/workflows", workflowRouter);
 rootRouter.use("/proposals", proposalRouter);
 rootRouter.use("/permissions", permissionsRouter);
 rootRouter.use("/files", fileRouter);

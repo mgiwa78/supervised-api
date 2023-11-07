@@ -16,7 +16,9 @@ export const Fetch__USER__PROJECTS__GET = async (
     const userId = req.user.id;
     console.log(userId);
 
-    const documents: TProject[] = await Project.find({ student: userId });
+    const documents: TProject[] = await Project.find({
+      student: userId
+    }).populate("status");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -32,7 +34,9 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
 
     const documents: TProject[] = await Project.find({
       student: studentId
-    }).populate("files");
+    })
+      .populate("files")
+      .populate("status");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -41,7 +45,9 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
 
 export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
   try {
-    const documents: TProject[] = await Project.find().populate("files");
+    const documents: TProject[] = await Project.find()
+      .populate("files")
+      .populate("status");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -55,7 +61,8 @@ export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
 
     const project: TProject[] = await Project.findById(projectId)
       .populate("student")
-      .populate("files");
+      .populate("files")
+      .populate("status");
 
     res.json({ status: "success", data: project });
   } catch (error) {
@@ -69,7 +76,10 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
 ) => {
   try {
     const user = req.user;
-    const projects = await Project.find().populate("student").populate("files");
+    const projects = await Project.find()
+      .populate("student")
+      .populate("files")
+      .populate("status");
 
     const assigned = projects?.map((project: any) => {
       console.log(project.student.supervisor);
@@ -89,13 +99,13 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
 };
 
 export const Create__PROJECTS__POST = async (req: Request, res: Response) => {
-  const { title, methodology, description } = req.body;
+  const { title, methodology, student, description } = req.body;
   try {
     const project: ProjectDoc = new Project({
       title,
       methodology,
       description,
-      student: req.user.id,
+      student: student ? student : req.user.id,
       status: "Pending Review"
     });
 

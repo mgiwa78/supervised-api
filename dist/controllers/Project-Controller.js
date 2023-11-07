@@ -15,7 +15,9 @@ const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 
     try {
         const userId = req.user.id;
         console.log(userId);
-        const documents = yield project_1.Project.find({ student: userId });
+        const documents = yield project_1.Project.find({
+            student: userId
+        }).populate("status");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -28,7 +30,9 @@ const Fetch__STUDENT__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, vo
         const { studentId } = req.params;
         const documents = yield project_1.Project.find({
             student: studentId
-        }).populate("files");
+        })
+            .populate("files")
+            .populate("status");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -38,7 +42,9 @@ const Fetch__STUDENT__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, vo
 exports.Fetch__STUDENT__PROJECTS__GET = Fetch__STUDENT__PROJECTS__GET;
 const Fetch__ALL_PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const documents = yield project_1.Project.find().populate("files");
+        const documents = yield project_1.Project.find()
+            .populate("files")
+            .populate("status");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -52,7 +58,8 @@ const Fetch__PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, func
         console.log("first  documents");
         const project = yield project_1.Project.findById(projectId)
             .populate("student")
-            .populate("files");
+            .populate("files")
+            .populate("status");
         res.json({ status: "success", data: project });
     }
     catch (error) {
@@ -63,7 +70,10 @@ exports.Fetch__PROJECT__GET = Fetch__PROJECT__GET;
 const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
-        const projects = yield project_1.Project.find().populate("student").populate("files");
+        const projects = yield project_1.Project.find()
+            .populate("student")
+            .populate("files")
+            .populate("status");
         const assigned = projects === null || projects === void 0 ? void 0 : projects.map((project) => {
             var _a, _b, _c;
             console.log(project.student.supervisor);
@@ -80,13 +90,13 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
 });
 exports.Fetch__PROJECT_ASSIGNED__GET = Fetch__PROJECT_ASSIGNED__GET;
 const Create__PROJECTS__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, methodology, description } = req.body;
+    const { title, methodology, student, description } = req.body;
     try {
         const project = new project_1.Project({
             title,
             methodology,
             description,
-            student: req.user.id,
+            student: student ? student : req.user.id,
             status: "Pending Review"
         });
         yield project.save();

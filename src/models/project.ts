@@ -50,11 +50,7 @@ const projectSchema = new mongoose.Schema({
       date: { type: Date, required: true }
     }
   ],
-  status: {
-    type: String,
-    enum: ["Draft", "In Progress", "Pending Approval", "Pending Review"],
-    default: "Draft"
-  }
+  status: { type: mongoose.Schema.Types.ObjectId, ref: "Workflow" }
 });
 projectSchema.set("timestamps", true);
 

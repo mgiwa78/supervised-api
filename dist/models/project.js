@@ -29,11 +29,7 @@ const projectSchema = new mongoose_1.default.Schema({
             date: { type: Date, required: true }
         }
     ],
-    status: {
-        type: String,
-        enum: ["Draft", "In Progress", "Pending Approval", "Pending Review"],
-        default: "Draft"
-    }
+    status: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Workflow" }
 });
 projectSchema.set("timestamps", true);
 const Project = (((_a = mongoose_1.default.models) === null || _a === void 0 ? void 0 : _a.Project) ||

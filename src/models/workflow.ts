@@ -2,56 +2,40 @@ import mongoose, { Document as Doc, Model } from "mongoose";
 import { TUser } from "./user";
 import { TProject } from "./project";
 
-export interface TAssignment {
-  student: string | TUser;
-  supervisor: string | TUser;
-  project: string | TProject;
-  assignmentDate: Date;
-  dueDate: Date;
-  status: "Pending" | "Completed";
+export interface TWorkflow {
+  title: string;
+  color: string;
+  order: string;
+  default: string;
 }
 
-export interface AssignmentDoc extends Doc, TAssignment {}
+export interface WorkflowDoc extends Doc, TWorkflow {}
 
-interface AssignmentModel extends Model<AssignmentDoc> {
-  build(attrs: TAssignment): AssignmentDoc;
+interface WorkflowModel extends Model<WorkflowDoc> {
+  build(attrs: TWorkflow): WorkflowDoc;
 }
 
-const assignmentSchema = new mongoose.Schema({
-  student: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
-  },
-  supervisor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
-  },
-  project: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Project",
-    required: true
-  },
-  assignmentDate: {
-    type: Date,
-    default: Date.now
-  },
-  dueDate: {
-    type: Date,
-    required: true
-  },
-  status: {
+const WorkflowSchema = new mongoose.Schema({
+  title: {
     type: String,
-    enum: ["Pending", "Completed"],
-    default: "Pending"
+    required: true
+  },
+  color: {
+    type: String,
+    required: true
+  },
+  order: {
+    type: String
+  },
+  default: {
+    type: String
   }
 });
 
-const Assignment: AssignmentModel = (mongoose.models?.Assignment ||
-  mongoose.model<AssignmentDoc, AssignmentModel>(
-    "Assignment",
-    assignmentSchema
-  )) as AssignmentModel;
+const Workflow: WorkflowModel = (mongoose.models?.Workflow ||
+  mongoose.model<WorkflowDoc, WorkflowModel>(
+    "Workflow",
+    WorkflowSchema
+  )) as WorkflowModel;
 
-export { Assignment };
+export { Workflow };
