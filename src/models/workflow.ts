@@ -5,8 +5,7 @@ import { TProject } from "./project";
 export interface TWorkflow {
   title: string;
   color: string;
-  order: string;
-  default: string;
+  defaultOrder: string;
 }
 
 export interface WorkflowDoc extends Doc, TWorkflow {}
@@ -24,10 +23,7 @@ const WorkflowSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  order: {
-    type: String
-  },
-  default: {
+  defaultOrder: {
     type: String
   }
 });

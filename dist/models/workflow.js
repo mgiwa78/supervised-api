@@ -15,10 +15,7 @@ const WorkflowSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
-    order: {
-        type: String
-    },
-    default: {
+    defaultOrder: {
         type: String
     }
 });

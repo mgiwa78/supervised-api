@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Create__WORKFLOW__POST = exports.Fetch__WORKFLOW__GET = void 0;
+exports.Update__WORKFLOW__PUT = exports.Create__WORKFLOW__POST = exports.Fetch__WORKFLOW__GET = void 0;
 const workflow_1 = require("../models/workflow");
 const project_1 = require("../models/project");
 const Fetch__WORKFLOW__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,4 +47,24 @@ const Create__WORKFLOW__POST = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.Create__WORKFLOW__POST = Create__WORKFLOW__POST;
+const Update__WORKFLOW__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { workflowId } = req.params;
+        const { title, color, defaultOrder } = req.body;
+        const workflow = yield workflow_1.Workflow.findById(workflowId);
+        const old = yield workflow_1.Workflow.findOne({ defaultOrder: defaultOrder });
+        if (old) {
+            old.defaultOrder = `${(yield workflow_1.Workflow.find()).length}`;
+        }
+        workflow.title = title;
+        workflow.color = color;
+        workflow.defaultOrder = color;
+        workflow.save();
+        return res.json({ status: "success", data: workflow });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Update__WORKFLOW__PUT = Update__WORKFLOW__PUT;
 //# sourceMappingURL=Workflow-Controller.js.map

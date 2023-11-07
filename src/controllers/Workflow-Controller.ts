@@ -36,3 +36,27 @@ export const Create__WORKFLOW__POST = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", error: error.message });
   }
 };
+
+export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
+  try {
+    const { workflowId } = req.params;
+    const { title, color, defaultOrder } = req.body;
+
+    const workflow: WorkflowDoc = await Workflow.findById(workflowId);
+
+    const old = await Workflow.findOne({ defaultOrder: defaultOrder });
+    if (old) {
+      old.defaultOrder = `${(await Workflow.find()).length}`;
+    }
+
+    workflow.title = title;
+    workflow.color = color;
+    workflow.defaultOrder = color;
+
+    workflow.save();
+
+    return res.json({ status: "success", data: workflow });
+  } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
