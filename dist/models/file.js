@@ -8,7 +8,8 @@ exports.File = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const FileSchema = new mongoose_1.default.Schema({
     name: { type: String, required: true },
-    path: { type: String, required: true }
+    path: { type: String, required: true },
+    status: { type: String, required: true }
 });
 FileSchema.set("timestamps", true);
 // mongoose.model("File", FileSchema);

@@ -58,7 +58,7 @@ const Update__WORKFLOW__PUT = (req, res) => __awaiter(void 0, void 0, void 0, fu
         }
         workflow.title = title;
         workflow.color = color;
-        workflow.defaultOrder = color;
+        workflow.defaultOrder = defaultOrder;
         workflow.save();
         return res.json({ status: "success", data: workflow });
     }

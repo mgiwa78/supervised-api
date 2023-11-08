@@ -51,7 +51,7 @@ export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
 
     workflow.title = title;
     workflow.color = color;
-    workflow.defaultOrder = color;
+    workflow.defaultOrder = defaultOrder;
 
     workflow.save();
 

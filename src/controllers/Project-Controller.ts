@@ -29,13 +29,15 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
   res: Response
 ) => {
   try {
+    console.log("first");
     const { studentId } = req.params;
 
     const documents: TProject[] = await Project.find({
       student: studentId
     })
       .populate("files")
-      .populate("status");
+      .populate("status")
+      .populate("workflows");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -46,7 +48,8 @@ export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
   try {
     const documents: TProject[] = await Project.find()
       .populate("files")
-      .populate("status");
+      .populate("status")
+      .populate("workflows");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -60,7 +63,8 @@ export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
     const project: TProject[] = await Project.findById(projectId)
       .populate("student")
       .populate("files")
-      .populate("status");
+      .populate("status")
+      .populate("workflows");
 
     res.json({ status: "success", data: project });
   } catch (error) {
@@ -77,7 +81,8 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
     const projects = await Project.find()
       .populate("student")
       .populate("files")
-      .populate("status");
+      .populate("status")
+      .populate("workflows");
 
     const assigned = projects?.map((project: any) => {
       return (
@@ -141,7 +146,7 @@ export const Update__PROJECTS__PUT = async (req: Request, res: Response) => {
 
     return res
       .status(400)
-      .json({ status: "error", message: "Invalid DocumentID" });
+      .json({ status: "error", message: "Invalid DocumentIddD" });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
   }

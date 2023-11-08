@@ -22,6 +22,7 @@ const projectSchema = new mongoose_1.default.Schema({
     methodology: { type: String },
     resources: [{ type: String }],
     files: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "File" }],
+    workflows: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "Workflow" }],
     ethicalConsiderations: { type: String },
     milestones: [
         {

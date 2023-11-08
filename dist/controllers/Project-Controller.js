@@ -26,12 +26,14 @@ const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 
 exports.Fetch__USER__PROJECTS__GET = Fetch__USER__PROJECTS__GET;
 const Fetch__STUDENT__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("first");
         const { studentId } = req.params;
         const documents = yield project_1.Project.find({
             student: studentId
         })
             .populate("files")
-            .populate("status");
+            .populate("status")
+            .populate("workflows");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -43,7 +45,8 @@ const Fetch__ALL_PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0,
     try {
         const documents = yield project_1.Project.find()
             .populate("files")
-            .populate("status");
+            .populate("status")
+            .populate("workflows");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -57,7 +60,8 @@ const Fetch__PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, func
         const project = yield project_1.Project.findById(projectId)
             .populate("student")
             .populate("files")
-            .populate("status");
+            .populate("status")
+            .populate("workflows");
         res.json({ status: "success", data: project });
     }
     catch (error) {
@@ -71,7 +75,8 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
         const projects = yield project_1.Project.find()
             .populate("student")
             .populate("files")
-            .populate("status");
+            .populate("status")
+            .populate("workflows");
         const assigned = projects === null || projects === void 0 ? void 0 : projects.map((project) => {
             var _a, _b, _c;
             return (((_a = project.student) === null || _a === void 0 ? void 0 : _a.supervisor) &&
@@ -127,7 +132,7 @@ const Update__PROJECTS__PUT = (req, res) => __awaiter(void 0, void 0, void 0, fu
         }
         return res
             .status(400)
-            .json({ status: "error", message: "Invalid DocumentID" });
+            .json({ status: "error", message: "Invalid DocumentIddD" });
     }
     catch (error) {
         res.status(500).json({ status: "error", error: error.message });

@@ -14,6 +14,7 @@ import { ObjectId } from "mongodb";
 import { User } from "../models";
 import { TUser, UserDoc } from "../models/user";
 import { File, FileDoc, TFile } from "../models/file";
+import { Workflow } from "../models/workflow";
 
 export const Fetch__USER__PROPOSAL__GET = async (
   req: Request,
@@ -96,12 +97,18 @@ export const Upload__PROPOSAL_FILE__PUT = async (
 ) => {
   const { files } = req.body;
   const { proposalId } = req.params;
+
+  const workflow = await Workflow.findOne({ defaultOrder: "-1" });
+
+  const addStatus = files.map((file: any) => {
+    return { ...file, status: workflow.id };
+  });
+
   try {
-    const fileDocs = await File.insertMany(files);
+    const fileDocs = await File.insertMany(addStatus);
 
     const fileIDs = fileDocs.map((f) => f._id);
 
-    console.log(fileIDs);
     const projectProposal: ProjectProposalDoc =
       await ProjectProposal.findByIdAndUpdate(proposalId, {
         files: fileIDs
@@ -118,10 +125,12 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
   req: Request,
   res: Response
 ) => {
-  const { title, methodology, description, student, _id } = req.body;
+  const { title, methodology, workflows, description, student, _id } = req.body;
 
   try {
     const proposal = await ProjectProposal.findById(_id);
+    const workflow = await Workflow.findOne({ defaultOrder: "-1" });
+
     if (proposal.status !== "Approved") {
       proposal.status = "Approved";
       proposal.save();
@@ -131,8 +140,9 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
         methodology,
         files: proposal.files,
         description,
+        workflows: workflows,
         student: student,
-        status: "Pending Review"
+        status: workflow._id
       });
 
       await project.save();

@@ -14,6 +14,7 @@ const project_1 = require("../models/project");
 const proposal_1 = require("../models/proposal");
 const models_1 = require("../models");
 const file_1 = require("../models/file");
+const workflow_1 = require("../models/workflow");
 const Fetch__USER__PROPOSAL__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
@@ -83,10 +84,13 @@ exports.Create__PROPOSAL__POST = Create__PROPOSAL__POST;
 const Upload__PROPOSAL_FILE__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { files } = req.body;
     const { proposalId } = req.params;
+    const workflow = yield workflow_1.Workflow.findOne({ defaultOrder: "-1" });
+    const addStatus = files.map((file) => {
+        return Object.assign(Object.assign({}, file), { status: workflow.id });
+    });
     try {
-        const fileDocs = yield file_1.File.insertMany(files);
+        const fileDocs = yield file_1.File.insertMany(addStatus);
         const fileIDs = fileDocs.map((f) => f._id);
-        console.log(fileIDs);
         const projectProposal = yield proposal_1.ProjectProposal.findByIdAndUpdate(proposalId, {
             files: fileIDs
         });
@@ -99,9 +103,10 @@ const Upload__PROPOSAL_FILE__PUT = (req, res) => __awaiter(void 0, void 0, void 
 });
 exports.Upload__PROPOSAL_FILE__PUT = Upload__PROPOSAL_FILE__PUT;
 const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, methodology, description, student, _id } = req.body;
+    const { title, methodology, workflows, description, student, _id } = req.body;
     try {
         const proposal = yield proposal_1.ProjectProposal.findById(_id);
+        const workflow = yield workflow_1.Workflow.findOne({ defaultOrder: "-1" });
         if (proposal.status !== "Approved") {
             proposal.status = "Approved";
             proposal.save();
@@ -110,8 +115,9 @@ const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 
                 methodology,
                 files: proposal.files,
                 description,
+                workflows: workflows,
                 student: student,
-                status: "Pending Review"
+                status: workflow._id
             });
             yield project.save();
             res.json({ status: "success", data: project });

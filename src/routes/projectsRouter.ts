@@ -33,7 +33,7 @@ projectRouter.get(
 );
 
 projectRouter.get(
-  "/ofStudent/:studentId",
+  "/student/review/:studentId",
   AuthenticateUser,
   Fetch__STUDENT__PROJECTS__GET
 );
