@@ -14,6 +14,7 @@ import projectRouter from "./projectsRouter";
 import proposalRouter from "./proposalRouter";
 import fileRouter from "./fileRouter";
 import workflowRouter from "./workflowRouter";
+import stateRouter from "./stateRouter";
 
 let rootRouter = Router();
 
@@ -34,6 +35,7 @@ rootRouter.use("/documents", documentRouter);
 rootRouter.use("/workflows", workflowRouter);
 rootRouter.use("/proposals", proposalRouter);
 rootRouter.use("/permissions", permissionsRouter);
+rootRouter.use("/states", stateRouter);
 rootRouter.use("/files", fileRouter);
 
 export default rootRouter;

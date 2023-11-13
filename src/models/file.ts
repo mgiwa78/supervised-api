@@ -4,7 +4,7 @@ import { TRole } from "./role";
 export interface TFile {
   name: string;
   path: string;
-  status: string;
+  status: string | null;
 }
 
 interface FileModel extends mongoose.Model<FileDoc> {
@@ -13,7 +13,7 @@ interface FileModel extends mongoose.Model<FileDoc> {
 
 export interface FileDoc extends mongoose.Document {
   name: string;
-  status: string;
+  status: string | null;
   path: string;
   types: Array<TRole>;
 }
@@ -21,7 +21,7 @@ export interface FileDoc extends mongoose.Document {
 const FileSchema = new mongoose.Schema({
   name: { type: String, required: true },
   path: { type: String, required: true },
-  status: { type: String, required: true }
+  status: { type: String, default: null }
 });
 
 FileSchema.set("timestamps", true);

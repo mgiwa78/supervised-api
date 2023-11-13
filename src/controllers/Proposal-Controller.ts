@@ -91,17 +91,18 @@ export const Create__PROPOSAL__POST = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", message: error.message });
   }
 };
+
 export const Upload__PROPOSAL_FILE__PUT = async (
   req: Request,
   res: Response
 ) => {
   const { files } = req.body;
   const { proposalId } = req.params;
-
+  let addStatus;
   const workflow = await Workflow.findOne({ defaultOrder: "-1" });
 
-  const addStatus = files.map((file: any) => {
-    return { ...file, status: workflow.id };
+  addStatus = files.map((file: any) => {
+    return { ...file, status: workflow ? workflow._id : null };
   });
 
   try {
@@ -125,28 +126,31 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
   req: Request,
   res: Response
 ) => {
-  const { title, methodology, workflows, description, student, _id } = req.body;
+  const { title, methodology, workflow, description, student, _id } = req.body;
 
   try {
     const proposal = await ProjectProposal.findById(_id);
-    const workflow = await Workflow.findOne({ defaultOrder: "-1" });
+    const workflowData = await Workflow.findById(workflow).populate("states");
+
+    console.log(workflow);
+    console.log(workflowData);
+    workflowData.states.find((state) => state.position === "-1");
 
     if (proposal.status !== "Approved") {
-      proposal.status = "Approved";
-      proposal.save();
-
       const project: ProjectDoc = new Project({
         title,
         methodology,
         files: proposal.files,
         description,
-        workflows: workflows,
+        workflow: workflowData,
         student: student,
-        status: workflow._id
+        status: "Pending"
       });
 
       await project.save();
 
+      proposal.status = "Approved";
+      proposal.save();
       res.json({ status: "success", data: project });
     } else {
       res

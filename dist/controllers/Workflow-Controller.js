@@ -14,7 +14,7 @@ const workflow_1 = require("../models/workflow");
 const project_1 = require("../models/project");
 const Fetch__WORKFLOW__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const workflows = yield workflow_1.Workflow.find();
+        const workflows = yield workflow_1.Workflow.find().populate("states");
         const all = workflows.map((workflow) => __awaiter(void 0, void 0, void 0, function* () {
             try {
                 const a = (yield project_1.Project.find({ status: workflow._id.toString() }))
@@ -35,9 +35,10 @@ const Fetch__WORKFLOW__GET = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.Fetch__WORKFLOW__GET = Fetch__WORKFLOW__GET;
 const Create__WORKFLOW__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { title, color } = req.body;
+        const { title, color, description } = req.body;
         const workflow = yield workflow_1.Workflow.create({
             title: title,
+            description: description,
             color: color
         });
         return res.json({ status: "success", data: workflow });
@@ -50,12 +51,13 @@ exports.Create__WORKFLOW__POST = Create__WORKFLOW__POST;
 const Update__WORKFLOW__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { workflowId } = req.params;
-        const { title, color, defaultOrder } = req.body;
+        const { title, color, defaultOrder, description } = req.body;
         const workflow = yield workflow_1.Workflow.findById(workflowId);
         const old = yield workflow_1.Workflow.findOne({ defaultOrder: defaultOrder });
         if (old) {
             old.defaultOrder = `${(yield workflow_1.Workflow.find()).length}`;
         }
+        workflow.description = description;
         workflow.title = title;
         workflow.color = color;
         workflow.defaultOrder = defaultOrder;

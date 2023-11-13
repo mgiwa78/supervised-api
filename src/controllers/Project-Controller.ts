@@ -36,8 +36,8 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
       student: studentId
     })
       .populate("files")
-      .populate("status")
-      .populate("workflows");
+
+      .populate("workflow");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -48,8 +48,8 @@ export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
   try {
     const documents: TProject[] = await Project.find()
       .populate("files")
-      .populate("status")
-      .populate("workflows");
+
+      .populate("workflow");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -63,8 +63,14 @@ export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
     const project: TProject[] = await Project.findById(projectId)
       .populate("student")
       .populate("files")
-      .populate("status")
-      .populate("workflows");
+
+      .populate("workflow")
+      .populate({
+        path: "workflow",
+        populate: {
+          path: "states"
+        }
+      });
 
     res.json({ status: "success", data: project });
   } catch (error) {
@@ -81,8 +87,8 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
     const projects = await Project.find()
       .populate("student")
       .populate("files")
-      .populate("status")
-      .populate("workflows");
+
+      .populate("workflow");
 
     const assigned = projects?.map((project: any) => {
       return (

@@ -32,8 +32,7 @@ const Fetch__STUDENT__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, vo
             student: studentId
         })
             .populate("files")
-            .populate("status")
-            .populate("workflows");
+            .populate("workflow");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -45,8 +44,7 @@ const Fetch__ALL_PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0,
     try {
         const documents = yield project_1.Project.find()
             .populate("files")
-            .populate("status")
-            .populate("workflows");
+            .populate("workflow");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -60,8 +58,13 @@ const Fetch__PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, func
         const project = yield project_1.Project.findById(projectId)
             .populate("student")
             .populate("files")
-            .populate("status")
-            .populate("workflows");
+            .populate("workflow")
+            .populate({
+            path: "workflow",
+            populate: {
+                path: "states"
+            }
+        });
         res.json({ status: "success", data: project });
     }
     catch (error) {
@@ -75,8 +78,7 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
         const projects = yield project_1.Project.find()
             .populate("student")
             .populate("files")
-            .populate("status")
-            .populate("workflows");
+            .populate("workflow");
         const assigned = projects === null || projects === void 0 ? void 0 : projects.map((project) => {
             var _a, _b, _c;
             return (((_a = project.student) === null || _a === void 0 ? void 0 : _a.supervisor) &&

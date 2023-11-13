@@ -43,7 +43,7 @@ const projectSchema = new mongoose.Schema({
   methodology: { type: String },
   resources: [{ type: String }],
   files: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }],
-  workflows: [{ type: mongoose.Schema.Types.ObjectId, ref: "Workflow" }],
+  workflow: { type: mongoose.Schema.Types.ObjectId, ref: "Workflow" },
   ethicalConsiderations: { type: String },
   milestones: [
     {
@@ -51,7 +51,7 @@ const projectSchema = new mongoose.Schema({
       date: { type: Date, required: true }
     }
   ],
-  status: { type: mongoose.Schema.Types.ObjectId, ref: "Workflow" }
+  status: { type: String, default: null }
 });
 projectSchema.set("timestamps", true);
 

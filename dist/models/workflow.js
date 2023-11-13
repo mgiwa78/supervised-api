@@ -11,13 +11,23 @@ const WorkflowSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     color: {
         type: String,
         required: true
     },
     defaultOrder: {
         type: String
-    }
+    },
+    states: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "State"
+        }
+    ]
 });
 const Workflow = (((_a = mongoose_1.default.models) === null || _a === void 0 ? void 0 : _a.Workflow) ||
     mongoose_1.default.model("Workflow", WorkflowSchema));

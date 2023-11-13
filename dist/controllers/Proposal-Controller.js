@@ -84,9 +84,10 @@ exports.Create__PROPOSAL__POST = Create__PROPOSAL__POST;
 const Upload__PROPOSAL_FILE__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { files } = req.body;
     const { proposalId } = req.params;
+    let addStatus;
     const workflow = yield workflow_1.Workflow.findOne({ defaultOrder: "-1" });
-    const addStatus = files.map((file) => {
-        return Object.assign(Object.assign({}, file), { status: workflow.id });
+    addStatus = files.map((file) => {
+        return Object.assign(Object.assign({}, file), { status: workflow ? workflow._id : null });
     });
     try {
         const fileDocs = yield file_1.File.insertMany(addStatus);
@@ -103,23 +104,26 @@ const Upload__PROPOSAL_FILE__PUT = (req, res) => __awaiter(void 0, void 0, void 
 });
 exports.Upload__PROPOSAL_FILE__PUT = Upload__PROPOSAL_FILE__PUT;
 const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, methodology, workflows, description, student, _id } = req.body;
+    const { title, methodology, workflow, description, student, _id } = req.body;
     try {
         const proposal = yield proposal_1.ProjectProposal.findById(_id);
-        const workflow = yield workflow_1.Workflow.findOne({ defaultOrder: "-1" });
+        const workflowData = yield workflow_1.Workflow.findById(workflow).populate("states");
+        console.log(workflow);
+        console.log(workflowData);
+        workflowData.states.find((state) => state.position === "-1");
         if (proposal.status !== "Approved") {
-            proposal.status = "Approved";
-            proposal.save();
             const project = new project_1.Project({
                 title,
                 methodology,
                 files: proposal.files,
                 description,
-                workflows: workflows,
+                workflow: workflowData,
                 student: student,
-                status: workflow._id
+                status: "Pending"
             });
             yield project.save();
+            proposal.status = "Approved";
+            proposal.save();
             res.json({ status: "success", data: project });
         }
         else {

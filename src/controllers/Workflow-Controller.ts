@@ -4,7 +4,7 @@ import { Project } from "../models/project";
 
 export const Fetch__WORKFLOW__GET = async (req: Request, res: Response) => {
   try {
-    const workflows: WorkflowDoc[] = await Workflow.find();
+    const workflows: WorkflowDoc[] = await Workflow.find().populate("states");
 
     const all = workflows.map(async (workflow: any) => {
       try {
@@ -23,11 +23,13 @@ export const Fetch__WORKFLOW__GET = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", error: error.message });
   }
 };
+
 export const Create__WORKFLOW__POST = async (req: Request, res: Response) => {
   try {
-    const { title, color } = req.body;
+    const { title, color, description } = req.body;
     const workflow: WorkflowDoc = await Workflow.create({
       title: title,
+      description: description,
       color: color
     });
 
@@ -40,7 +42,7 @@ export const Create__WORKFLOW__POST = async (req: Request, res: Response) => {
 export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
   try {
     const { workflowId } = req.params;
-    const { title, color, defaultOrder } = req.body;
+    const { title, color, defaultOrder, description } = req.body;
 
     const workflow: WorkflowDoc = await Workflow.findById(workflowId);
 
@@ -49,6 +51,7 @@ export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
       old.defaultOrder = `${(await Workflow.find()).length}`;
     }
 
+    workflow.description = description;
     workflow.title = title;
     workflow.color = color;
     workflow.defaultOrder = defaultOrder;
