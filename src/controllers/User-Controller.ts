@@ -117,11 +117,14 @@ export const Fetch__STUDENTS_FOR_DEPT____GET = async (
   res: Response
 ) => {
   try {
+    const { onDepartment } = req.query;
+    console.log(onDepartment);
     const studentRole = await Role.findOne({ name: "Student" });
+    console.log(studentRole);
 
     const students = await User.find({
-      roles: { $in: [studentRole._id] },
-      department: req.user.department
+      roles: { $in: studentRole._id },
+      ...(!onDepartment && { department: req.user.department })
     })
       .populate("department")
       .populate("roles")

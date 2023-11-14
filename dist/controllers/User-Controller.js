@@ -111,11 +111,11 @@ const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.Fetch__STUDENTS__GET = Fetch__STUDENTS__GET;
 const Fetch__STUDENTS_FOR_DEPT____GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { onDepartment } = req.query;
+        console.log(onDepartment);
         const studentRole = yield role_1.Role.findOne({ name: "Student" });
-        const students = yield user_1.User.find({
-            roles: { $in: [studentRole._id] },
-            department: req.user.department
-        })
+        console.log(studentRole);
+        const students = yield user_1.User.find(Object.assign({ roles: { $in: studentRole._id } }, (!onDepartment && { department: req.user.department })))
             .populate("department")
             .populate("roles")
             .exec();
