@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Update__WORKFLOW__PUT = exports.Create__WORKFLOW__POST = exports.Fetch__WORKFLOW__GET = void 0;
 const workflow_1 = require("../models/workflow");
 const project_1 = require("../models/project");
+const state_1 = require("../models/state");
 const Fetch__WORKFLOW__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const workflows = yield workflow_1.Workflow.find().populate("states");
@@ -51,8 +52,26 @@ exports.Create__WORKFLOW__POST = Create__WORKFLOW__POST;
 const Update__WORKFLOW__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { workflowId } = req.params;
-        const { title, color, defaultOrder, description } = req.body;
+        const { title, color, defaultOrder, description, states } = req.body;
         const workflow = yield workflow_1.Workflow.findById(workflowId);
+        const prevStates = workflow.states.map((w) => {
+            return w.toString();
+        });
+        let stateToDelete = [];
+        let stateToSave = [];
+        prevStates.filter((s) => {
+            if (states.includes(s)) {
+                stateToSave.push(s);
+            }
+            else {
+                stateToDelete.push(s);
+            }
+        });
+        console.log(stateToDelete);
+        console.log(stateToSave);
+        stateToDelete.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
+            yield state_1.State.findByIdAndDelete(id);
+        }));
         const old = yield workflow_1.Workflow.findOne({ defaultOrder: defaultOrder });
         if (old) {
             old.defaultOrder = `${(yield workflow_1.Workflow.find()).length}`;
@@ -61,7 +80,7 @@ const Update__WORKFLOW__PUT = (req, res) => __awaiter(void 0, void 0, void 0, fu
         workflow.title = title;
         workflow.color = color;
         workflow.defaultOrder = defaultOrder;
-        workflow.save();
+        workflow.states = stateToSave;
         return res.json({ status: "success", data: workflow });
     }
     catch (error) {

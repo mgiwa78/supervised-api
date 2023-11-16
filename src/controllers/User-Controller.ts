@@ -72,16 +72,14 @@ export const Fetch__USERS__GET = async (req: Request, res: Response) => {
   }
 };
 
-export const Fetch__SUPERVISORS_FOR_DEPT__GET = async (
-  req: Request,
-  res: Response
-) => {
+export const Fetch__SUPERVISORS__GET = async (req: Request, res: Response) => {
   try {
-    console.log(req.user);
+    const { onDepartment } = req.query;
+
     const supervisorRole = await Role.findOne({ name: "Supervisor" });
     const supervisors = await User.find({
       roles: { $in: [supervisorRole._id] },
-      department: req.user.department
+      ...(!onDepartment && { department: req.user.department })
     })
       .populate("department")
       .populate("roles")
@@ -96,7 +94,7 @@ export const Fetch__SUPERVISORS_FOR_DEPT__GET = async (
   }
 };
 
-export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
+export const Fetch__sSTUDENTS__GET = async (req: Request, res: Response) => {
   try {
     const studentRole = await Role.findOne({ name: "Student" });
     const students = await User.find({ roles: { $in: [studentRole._id] } })
@@ -112,10 +110,7 @@ export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
       .json({ status: "error", error: "Internal server error" });
   }
 };
-export const Fetch__STUDENTS_FOR_DEPT____GET = async (
-  req: Request,
-  res: Response
-) => {
+export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
   try {
     const { onDepartment } = req.query;
     console.log(onDepartment);

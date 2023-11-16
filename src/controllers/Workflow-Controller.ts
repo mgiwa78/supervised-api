@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { TWorkflow, Workflow, WorkflowDoc } from "../models/workflow";
 import { Project } from "../models/project";
+import { State, StateDoc, TState } from "../models/state";
 
 export const Fetch__WORKFLOW__GET = async (req: Request, res: Response) => {
   try {
@@ -42,9 +43,31 @@ export const Create__WORKFLOW__POST = async (req: Request, res: Response) => {
 export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
   try {
     const { workflowId } = req.params;
-    const { title, color, defaultOrder, description } = req.body;
+    const { title, color, defaultOrder, description, states } = req.body;
 
     const workflow: WorkflowDoc = await Workflow.findById(workflowId);
+
+    const prevStates = workflow.states.map((w) => {
+      return w.toString();
+    });
+
+    let stateToDelete: any = [];
+    let stateToSave: any = [];
+
+    prevStates.filter((s: any) => {
+      if (states.includes(s)) {
+        stateToSave.push(s);
+      } else {
+        stateToDelete.push(s);
+      }
+    });
+
+    console.log(stateToDelete);
+    console.log(stateToSave);
+
+    stateToDelete.forEach(async (id: any) => {
+      await State.findByIdAndDelete(id);
+    });
 
     const old = await Workflow.findOne({ defaultOrder: defaultOrder });
     if (old) {
@@ -55,8 +78,7 @@ export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
     workflow.title = title;
     workflow.color = color;
     workflow.defaultOrder = defaultOrder;
-
-    workflow.save();
+    workflow.states = stateToSave;
 
     return res.json({ status: "success", data: workflow });
   } catch (error) {

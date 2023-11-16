@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Delete__USER__DELETE = exports.Update__OWN_USER__PUT = exports.Create__USER__POST = exports.Update__USER__PUT = exports.Fetch__USER__GET = exports.Fetch__STUDENTS_FOR_DEPT____GET = exports.Fetch__STUDENTS__GET = exports.Fetch__SUPERVISORS_FOR_DEPT__GET = exports.Fetch__USERS__GET = exports.Fetch__ORGANIZATIONS_USERS__GET = void 0;
+exports.Delete__USER__DELETE = exports.Update__OWN_USER__PUT = exports.Create__USER__POST = exports.Update__USER__PUT = exports.Fetch__USER__GET = exports.Fetch__STUDENTS__GET = exports.Fetch__sSTUDENTS__GET = exports.Fetch__SUPERVISORS__GET = exports.Fetch__USERS__GET = exports.Fetch__ORGANIZATIONS_USERS__GET = void 0;
 const user_1 = require("../models/user");
 const password_1 = require("../services/password");
 const role_1 = require("../models/role");
@@ -71,14 +71,11 @@ const Fetch__USERS__GET = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.Fetch__USERS__GET = Fetch__USERS__GET;
-const Fetch__SUPERVISORS_FOR_DEPT__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const Fetch__SUPERVISORS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.user);
+        const { onDepartment } = req.query;
         const supervisorRole = yield role_1.Role.findOne({ name: "Supervisor" });
-        const supervisors = yield user_1.User.find({
-            roles: { $in: [supervisorRole._id] },
-            department: req.user.department
-        })
+        const supervisors = yield user_1.User.find(Object.assign({ roles: { $in: [supervisorRole._id] } }, (!onDepartment && { department: req.user.department })))
             .populate("department")
             .populate("roles")
             .exec();
@@ -91,8 +88,8 @@ const Fetch__SUPERVISORS_FOR_DEPT__GET = (req, res) => __awaiter(void 0, void 0,
             .json({ status: "error", error: "Internal server error" });
     }
 });
-exports.Fetch__SUPERVISORS_FOR_DEPT__GET = Fetch__SUPERVISORS_FOR_DEPT__GET;
-const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.Fetch__SUPERVISORS__GET = Fetch__SUPERVISORS__GET;
+const Fetch__sSTUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const studentRole = yield role_1.Role.findOne({ name: "Student" });
         const students = yield user_1.User.find({ roles: { $in: [studentRole._id] } })
@@ -108,8 +105,8 @@ const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, fun
             .json({ status: "error", error: "Internal server error" });
     }
 });
-exports.Fetch__STUDENTS__GET = Fetch__STUDENTS__GET;
-const Fetch__STUDENTS_FOR_DEPT____GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.Fetch__sSTUDENTS__GET = Fetch__sSTUDENTS__GET;
+const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { onDepartment } = req.query;
         console.log(onDepartment);
@@ -128,7 +125,7 @@ const Fetch__STUDENTS_FOR_DEPT____GET = (req, res) => __awaiter(void 0, void 0, 
             .json({ status: "error", error: "Internal server error" });
     }
 });
-exports.Fetch__STUDENTS_FOR_DEPT____GET = Fetch__STUDENTS_FOR_DEPT____GET;
+exports.Fetch__STUDENTS__GET = Fetch__STUDENTS__GET;
 const Fetch__USER__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.params;
