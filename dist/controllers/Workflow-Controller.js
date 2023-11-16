@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Update__WORKFLOW__PUT = exports.Create__WORKFLOW__POST = exports.Fetch__WORKFLOW__GET = void 0;
+exports.Update__WORKFLOW__PUT = exports.Delete__WORKFLOW__DELETE = exports.Create__WORKFLOW__POST = exports.Fetch__WORKFLOW__GET = void 0;
 const workflow_1 = require("../models/workflow");
 const project_1 = require("../models/project");
 const state_1 = require("../models/state");
@@ -49,6 +49,21 @@ const Create__WORKFLOW__POST = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.Create__WORKFLOW__POST = Create__WORKFLOW__POST;
+const Delete__WORKFLOW__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { workflowId } = req.params;
+        const workflow = yield workflow_1.Workflow.findByIdAndDelete(workflowId);
+        const statesToDelete = workflow.states;
+        statesToDelete.forEach((id) => __awaiter(void 0, void 0, void 0, function* () {
+            yield state_1.State.findByIdAndDelete(id);
+        }));
+        return res.json({ status: "success" });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Delete__WORKFLOW__DELETE = Delete__WORKFLOW__DELETE;
 const Update__WORKFLOW__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { workflowId } = req.params;

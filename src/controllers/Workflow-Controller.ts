@@ -39,6 +39,22 @@ export const Create__WORKFLOW__POST = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", error: error.message });
   }
 };
+export const Delete__WORKFLOW__DELETE = async (req: Request, res: Response) => {
+  try {
+    const { workflowId } = req.params;
+    const workflow: WorkflowDoc = await Workflow.findByIdAndDelete(workflowId);
+
+    const statesToDelete = workflow.states;
+
+    statesToDelete.forEach(async (id) => {
+      await State.findByIdAndDelete(id);
+    });
+
+    return res.json({ status: "success" });
+  } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
 
 export const Update__WORKFLOW__PUT = async (req: Request, res: Response) => {
   try {
