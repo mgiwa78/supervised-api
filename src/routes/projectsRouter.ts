@@ -41,7 +41,7 @@ projectRouter.get(
 projectRouter.post(
   "/",
   AuthenticateUser,
-  hasPermission("createDocument"),
+  hasPermission("createProject"),
   Create__PROJECTS__POST
 );
 

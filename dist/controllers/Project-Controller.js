@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Delete__FILE__DELETE = exports.Update__PROJECTS__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
 const project_1 = require("../models/project");
+const models_1 = require("../models");
 const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
@@ -75,7 +76,11 @@ exports.Fetch__PROJECT__GET = Fetch__PROJECT__GET;
 const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
-        const projects = yield project_1.Project.find()
+        const assignedStudents = yield models_1.User.find({ supervisor: user.id });
+        const assignedStudentIds = assignedStudents.map((student) => student._id);
+        const projects = yield project_1.Project.find({
+            $or: [{ student: { $in: assignedStudentIds } }, { supervisor: user.id }]
+        })
             .populate("student")
             .populate("files")
             .populate("workflow");
@@ -94,15 +99,11 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
 });
 exports.Fetch__PROJECT_ASSIGNED__GET = Fetch__PROJECT_ASSIGNED__GET;
 const Create__PROJECTS__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, methodology, student, description } = req.body;
+    const { title, methodology, student, description, supervisor } = req.body;
     try {
-        const project = new project_1.Project({
-            title,
+        const project = new project_1.Project(Object.assign({ title,
             methodology,
-            description,
-            student: student ? student : req.user.id,
-            status: "Pending Review"
-        });
+            description, student: student ? student : req.user.id, status: "Pending Review" }, (supervisor && { supervisor: supervisor })));
         yield project.save();
         res.json({ status: "success", data: project });
     }

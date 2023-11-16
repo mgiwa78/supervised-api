@@ -7,6 +7,7 @@ import path from "path";
 
 import { uploadFileToStorage } from "../_utils/firebase";
 import { ObjectId } from "mongodb";
+import { User } from "../models";
 
 export const Fetch__USER__PROJECTS__GET = async (
   req: Request,
@@ -84,10 +85,16 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
 ) => {
   try {
     const user = req.user;
-    const projects = await Project.find()
+
+    const assignedStudents = await User.find({ supervisor: user.id });
+
+    const assignedStudentIds = assignedStudents.map((student) => student._id);
+
+    const projects = await Project.find({
+      $or: [{ student: { $in: assignedStudentIds } }, { supervisor: user.id }]
+    })
       .populate("student")
       .populate("files")
-
       .populate("workflow");
 
     const assigned = projects?.map((project: any) => {
@@ -106,14 +113,15 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
 };
 
 export const Create__PROJECTS__POST = async (req: Request, res: Response) => {
-  const { title, methodology, student, description } = req.body;
+  const { title, methodology, student, description, supervisor } = req.body;
   try {
     const project: ProjectDoc = new Project({
       title,
       methodology,
       description,
       student: student ? student : req.user.id,
-      status: "Pending Review"
+      status: "Pending Review",
+      ...(supervisor && { supervisor: supervisor })
     });
 
     await project.save();

@@ -45,6 +45,7 @@ const projectSchema = new mongoose.Schema({
   files: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }],
   workflow: { type: mongoose.Schema.Types.ObjectId, ref: "Workflow" },
   ethicalConsiderations: { type: String },
+
   milestones: [
     {
       name: { type: String, required: true },
