@@ -43,7 +43,6 @@ const Fetch__USERS__GET = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
         if (req.user.permissions.types["getAllUsers"]) {
             yield Promise.all(req.user.permissions.types["getAllUsers"].map((e) => __awaiter(void 0, void 0, void 0, function* () {
-                console.log(e.toString());
                 const r = yield role_1.Role.findById(e);
                 const us = yield user_1.User.find({
                     roles: { $in: e }
@@ -56,7 +55,6 @@ const Fetch__USERS__GET = (req, res) => __awaiter(void 0, void 0, void 0, functi
                         path: "permissions"
                     }
                 });
-                console.log(us);
                 allUsers.push(...us);
             })));
             return res.json({ status: "success", data: allUsers });
@@ -109,9 +107,7 @@ exports.Fetch__sSTUDENTS__GET = Fetch__sSTUDENTS__GET;
 const Fetch__STUDENTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { onDepartment } = req.query;
-        console.log(onDepartment);
         const studentRole = yield role_1.Role.findOne({ name: "Student" });
-        console.log(studentRole);
         const students = yield user_1.User.find(Object.assign({ roles: { $in: studentRole._id } }, (!onDepartment && { department: req.user.department })))
             .populate("department")
             .populate("roles")

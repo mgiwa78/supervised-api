@@ -38,8 +38,6 @@ export const Fetch__USERS__GET = async (req: Request, res: Response) => {
     if (req.user.permissions.types["getAllUsers"]) {
       await Promise.all(
         req.user.permissions.types["getAllUsers"].map(async (e) => {
-          console.log(e.toString());
-
           const r = await Role.findById(e);
 
           const us = await User.find({
@@ -53,8 +51,6 @@ export const Fetch__USERS__GET = async (req: Request, res: Response) => {
                 path: "permissions"
               }
             });
-
-          console.log(us);
 
           allUsers.push(...us);
         })
@@ -113,9 +109,7 @@ export const Fetch__sSTUDENTS__GET = async (req: Request, res: Response) => {
 export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
   try {
     const { onDepartment } = req.query;
-    console.log(onDepartment);
     const studentRole = await Role.findOne({ name: "Student" });
-    console.log(studentRole);
 
     const students = await User.find({
       roles: { $in: studentRole._id },
