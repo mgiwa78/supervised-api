@@ -144,13 +144,13 @@ const Fetch__USER_DASHBOARD_DATA__GET = (req, res) => __awaiter(void 0, void 0, 
         const userProjects = yield project_1.Project.find({
             student: user.id
         }).populate("status");
-        const pendingProjects = userProjects.filter((project) => project.status.position === "-1").length;
-        const approvedProjects = userProjects.filter((project) => project.status.position === "1").length;
-        const ongoingProjects = userProjects.filter((project) => project.status.position === "0").length;
+        const pendingProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) === "-1"; }).length;
+        const approvedProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) === "1"; }).length;
+        const ongoingProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) === "0"; }).length;
         const projectsSupervisors = userProjects.map((project) => {
             return {
                 project,
-                supervisor: project.supervisor || studentProfile.supervisor
+                supervisor: (project === null || project === void 0 ? void 0 : project.supervisor) || (studentProfile === null || studentProfile === void 0 ? void 0 : studentProfile.supervisor)
             };
         });
         return res.json({

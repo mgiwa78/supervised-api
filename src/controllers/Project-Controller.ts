@@ -178,21 +178,21 @@ export const Fetch__USER_DASHBOARD_DATA__GET = async (
     }).populate("status");
 
     const pendingProjects = userProjects.filter(
-      (project) => project.status.position === "-1"
+      (project) => project?.status?.position === "-1"
     ).length;
 
     const approvedProjects = userProjects.filter(
-      (project) => project.status.position === "1"
+      (project) => project?.status?.position === "1"
     ).length;
 
     const ongoingProjects = userProjects.filter(
-      (project) => project.status.position === "0"
+      (project) => project?.status?.position === "0"
     ).length;
 
     const projectsSupervisors = userProjects.map((project) => {
       return {
         project,
-        supervisor: project.supervisor || studentProfile.supervisor
+        supervisor: project?.supervisor || studentProfile?.supervisor
       };
     });
 
