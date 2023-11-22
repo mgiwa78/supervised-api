@@ -30,7 +30,7 @@ const projectSchema = new mongoose_1.default.Schema({
             date: { type: Date, required: true }
         }
     ],
-    status: { type: String, default: null }
+    status: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "State" }
 });
 projectSchema.set("timestamps", true);
 const Project = (((_a = mongoose_1.default.models) === null || _a === void 0 ? void 0 : _a.Project) ||

@@ -8,13 +8,34 @@ import {
   Fetch__WORKFLOW__GET,
   Update__WORKFLOW__PUT
 } from "../controllers/Workflow-Controller";
+import { hasPermission } from "../middleware/has-permission";
 
 const workflowRouter: Router = Router();
 
-workflowRouter.get("/", Fetch__WORKFLOW__GET);
-workflowRouter.post("/", Create__WORKFLOW__POST);
+workflowRouter.get(
+  "/",
+  AuthenticateUser,
+  hasPermission("createWorkflow"),
+  Fetch__WORKFLOW__GET
+);
+workflowRouter.post(
+  "/",
+  AuthenticateUser,
+  hasPermission("createWorkflow"),
+  Create__WORKFLOW__POST
+);
 
-workflowRouter.delete("/:workflowId", Delete__WORKFLOW__DELETE);
-workflowRouter.put("/:workflowId", Update__WORKFLOW__PUT);
+workflowRouter.delete(
+  "/:workflowId",
+  AuthenticateUser,
+  hasPermission("createWorkflow"),
+  Delete__WORKFLOW__DELETE
+);
+workflowRouter.put(
+  "/:workflowId",
+  AuthenticateUser,
+  hasPermission("createWorkflow"),
+  Update__WORKFLOW__PUT
+);
 
 export default workflowRouter;

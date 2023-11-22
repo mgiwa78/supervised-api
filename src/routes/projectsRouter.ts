@@ -10,8 +10,11 @@ import {
   Fetch__PROJECT_ASSIGNED__GET,
   Fetch__PROJECT__GET,
   Fetch__STUDENT__PROJECTS__GET,
-  Fetch__USER__PROJECTS__GET
+  Fetch__USER_DASHBOARD_DATA__GET,
+  Fetch__USER__PROJECTS__GET,
+  Upload__PROJECT_DOCUMENT__PUT
 } from "../controllers/Project-Controller";
+
 import { hasPermission } from "../middleware/has-permission";
 
 const path = require("path");
@@ -26,7 +29,8 @@ projectRouter.get(
   AuthenticateUser,
   Fetch__PROJECT_ASSIGNED__GET
 );
-projectRouter.get(
+
+projectRouter.delete(
   "/:projectId/:fileId",
   AuthenticateUser,
   Delete__FILE__DELETE
@@ -43,6 +47,18 @@ projectRouter.post(
   AuthenticateUser,
   hasPermission("createProject"),
   Create__PROJECTS__POST
+);
+projectRouter.put(
+  "/uploadDocument/:projectId",
+  AuthenticateUser,
+  // hasPermission("uploadDocument"),
+  Upload__PROJECT_DOCUMENT__PUT
+);
+projectRouter.get(
+  "/student/dashboardData",
+  AuthenticateUser,
+  // hasPermission("uploadDocument"),
+  Fetch__USER_DASHBOARD_DATA__GET
 );
 
 export default projectRouter;

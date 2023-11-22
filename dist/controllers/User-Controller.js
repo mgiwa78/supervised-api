@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Delete__USER__DELETE = exports.Update__OWN_USER__PUT = exports.Create__USER__POST = exports.Update__USER__PUT = exports.Fetch__USER__GET = exports.Fetch__STUDENTS__GET = exports.Fetch__sSTUDENTS__GET = exports.Fetch__SUPERVISORS__GET = exports.Fetch__USERS__GET = exports.Fetch__ORGANIZATIONS_USERS__GET = void 0;
+exports.Fetch__MY_PROFILE__GET = exports.Delete__USER__DELETE = exports.Update__OWN_USER__PUT = exports.Create__USER__POST = exports.Update__USER__PUT = exports.Fetch__USER__GET = exports.Fetch__STUDENTS__GET = exports.Fetch__sSTUDENTS__GET = exports.Fetch__SUPERVISORS__GET = exports.Fetch__USERS__GET = exports.Fetch__ORGANIZATIONS_USERS__GET = void 0;
 const user_1 = require("../models/user");
 const password_1 = require("../services/password");
 const role_1 = require("../models/role");
@@ -235,4 +235,20 @@ const Delete__USER__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.Delete__USER__DELETE = Delete__USER__DELETE;
+const Fetch__MY_PROFILE__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user } = req;
+        const userData = yield user_1.User.findById(user.id)
+            .populate("department")
+            .populate("roles");
+        return res.json({ status: "success", data: userData });
+    }
+    catch (error) {
+        console.error("Error fetching profile:", error);
+        return res
+            .status(500)
+            .json({ status: "error", error: "Internal server error" });
+    }
+});
+exports.Fetch__MY_PROFILE__GET = Fetch__MY_PROFILE__GET;
 //# sourceMappingURL=User-Controller.js.map

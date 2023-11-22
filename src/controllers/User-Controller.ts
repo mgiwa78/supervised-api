@@ -254,3 +254,19 @@ export const Delete__USER__DELETE = async (req: Request, res: Response) => {
       .json({ status: "error", error: "Internal server error" });
   }
 };
+
+export const Fetch__MY_PROFILE__GET = async (req: Request, res: Response) => {
+  try {
+    const { user } = req;
+    const userData = await User.findById(user.id)
+      .populate("department")
+      .populate("roles");
+
+    return res.json({ status: "success", data: userData });
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    return res
+      .status(500)
+      .json({ status: "error", error: "Internal server error" });
+  }
+};

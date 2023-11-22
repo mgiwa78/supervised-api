@@ -8,6 +8,9 @@ import path from "path";
 import { uploadFileToStorage } from "../_utils/firebase";
 import { ObjectId } from "mongodb";
 import { User } from "../models";
+import { File } from "../models/file";
+import { Workflow } from "../models/workflow";
+import { ProjectProposal } from "../models/proposal";
 
 export const Fetch__USER__PROJECTS__GET = async (
   req: Request,
@@ -133,6 +136,80 @@ export const Create__PROJECTS__POST = async (req: Request, res: Response) => {
   }
 };
 
+export const Upload__PROJECT_DOCUMENT__PUT = async (
+  req: Request,
+  res: Response
+) => {
+  const { files } = req.body;
+  const { projectId } = req.params;
+  let addStatus;
+  const workflow = await Workflow.findOne({ defaultOrder: "-1" });
+
+  addStatus = files.map((file: any) => {
+    return { ...file, status: workflow ? workflow._id : null };
+  });
+
+  try {
+    const fileDocs = await File.insertMany(addStatus);
+
+    const fileIDs = fileDocs.map((f) => f._id);
+
+    const project: ProjectDoc = await Project.findByIdAndUpdate(projectId, {
+      $push: { files: { $each: fileIDs } }
+    });
+
+    res.json({ status: "success", data: project });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};
+export const Fetch__USER_DASHBOARD_DATA__GET = async (
+  req: Request,
+  res: Response
+) => {
+  const { user } = req;
+
+  try {
+    const studentProfile = await User.findById(user.id).populate("supervisor");
+
+    const userProjects: Array<ProjectDoc> = await Project.find({
+      student: user.id
+    }).populate("status");
+
+    const pendingProjects = userProjects.filter(
+      (project) => project.status.position === "-1"
+    ).length;
+
+    const approvedProjects = userProjects.filter(
+      (project) => project.status.position === "1"
+    ).length;
+
+    const ongoingProjects = userProjects.filter(
+      (project) => project.status.position === "0"
+    ).length;
+
+    const projectsSupervisors = userProjects.map((project) => {
+      return {
+        project,
+        supervisor: project.supervisor || studentProfile.supervisor
+      };
+    });
+
+    return res.json({
+      data: {
+        ongoingProjects,
+        pendingProjects,
+        approvedProjects,
+        projectsSupervisors
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};
+
 export const Update__PROJECTS__PUT = async (req: Request, res: Response) => {
   const { title, methodology, type, description } = req.body;
   const { projectID } = req.params;
@@ -166,26 +243,23 @@ export const Update__PROJECTS__PUT = async (req: Request, res: Response) => {
   }
 };
 export const Delete__FILE__DELETE = async (req: Request, res: Response) => {
-  const { title, methodology, type, description } = req.body;
-  const { projectID } = req.params;
+  const { projectId, fileId } = req.params;
   try {
-    if (projectID) {
-      const project: ProjectDoc = await Project.findOne({
-        _id: req.params.projectID,
-        author: req.user.id
-      }).populate("files");
+    if (projectId) {
+      const project = await Project.updateOne(
+        { _id: projectId },
+        {
+          $pull: { files: { $eq: fileId } }
+        }
+      );
+
+      const file = File.findByIdAndDelete(fileId);
 
       if (!project) {
         return res
           .status(400)
           .json({ status: "error", message: "Invalid Project ID" });
       }
-
-      project.title = title;
-      project.methodology = methodology;
-      project.description = description;
-
-      await project.save();
 
       return res.json({ status: "success", data: project });
     }

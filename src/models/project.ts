@@ -1,5 +1,6 @@
 import mongoose, { Document as Doc, Model } from "mongoose";
 import { TUser } from "./user";
+import { StateDoc, TState } from "./state";
 
 export interface TProject {
   title: string;
@@ -17,7 +18,7 @@ export interface TProject {
   resources: string[];
   ethicalConsiderations: string;
   milestones: { name: string; date: Date }[];
-  status: "Draft" | "In Progress" | "Pending Approval";
+  status: TState;
   comments: string;
 }
 
@@ -52,7 +53,7 @@ const projectSchema = new mongoose.Schema({
       date: { type: Date, required: true }
     }
   ],
-  status: { type: String, default: null }
+  status: { type: mongoose.Schema.Types.ObjectId, ref: "State" }
 });
 projectSchema.set("timestamps", true);
 

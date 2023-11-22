@@ -132,9 +132,7 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
     const proposal = await ProjectProposal.findById(_id);
     const workflowData = await Workflow.findById(workflow).populate("states");
 
-    console.log(workflow);
-    console.log(workflowData);
-    workflowData.states.find((state) => state.position === "-1");
+    const status = workflowData.states.find((state) => state.position === "-1");
 
     if (proposal.status !== "Approved") {
       const project: ProjectDoc = new Project({
@@ -144,7 +142,7 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
         description,
         workflow: workflowData,
         student: student,
-        status: "Pending"
+        status
       });
 
       await project.save();

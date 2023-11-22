@@ -108,9 +108,7 @@ const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 
     try {
         const proposal = yield proposal_1.ProjectProposal.findById(_id);
         const workflowData = yield workflow_1.Workflow.findById(workflow).populate("states");
-        console.log(workflow);
-        console.log(workflowData);
-        workflowData.states.find((state) => state.position === "-1");
+        const status = workflowData.states.find((state) => state.position === "-1");
         if (proposal.status !== "Approved") {
             const project = new project_1.Project({
                 title,
@@ -119,7 +117,7 @@ const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 
                 description,
                 workflow: workflowData,
                 student: student,
-                status: "Pending"
+                status
             });
             yield project.save();
             proposal.status = "Approved";

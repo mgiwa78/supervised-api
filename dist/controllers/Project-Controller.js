@@ -9,9 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Delete__FILE__DELETE = exports.Update__PROJECTS__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
+exports.Delete__FILE__DELETE = exports.Update__PROJECTS__PUT = exports.Fetch__USER_DASHBOARD_DATA__GET = exports.Upload__PROJECT_DOCUMENT__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
 const project_1 = require("../models/project");
 const models_1 = require("../models");
+const file_1 = require("../models/file");
+const workflow_1 = require("../models/workflow");
 const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
@@ -113,6 +115,59 @@ const Create__PROJECTS__POST = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.Create__PROJECTS__POST = Create__PROJECTS__POST;
+const Upload__PROJECT_DOCUMENT__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { files } = req.body;
+    const { projectId } = req.params;
+    let addStatus;
+    const workflow = yield workflow_1.Workflow.findOne({ defaultOrder: "-1" });
+    addStatus = files.map((file) => {
+        return Object.assign(Object.assign({}, file), { status: workflow ? workflow._id : null });
+    });
+    try {
+        const fileDocs = yield file_1.File.insertMany(addStatus);
+        const fileIDs = fileDocs.map((f) => f._id);
+        const project = yield project_1.Project.findByIdAndUpdate(projectId, {
+            $push: { files: { $each: fileIDs } }
+        });
+        res.json({ status: "success", data: project });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ status: "error", message: error.message });
+    }
+});
+exports.Upload__PROJECT_DOCUMENT__PUT = Upload__PROJECT_DOCUMENT__PUT;
+const Fetch__USER_DASHBOARD_DATA__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user } = req;
+    try {
+        const studentProfile = yield models_1.User.findById(user.id).populate("supervisor");
+        const userProjects = yield project_1.Project.find({
+            student: user.id
+        }).populate("status");
+        const pendingProjects = userProjects.filter((project) => project.status.position === "-1").length;
+        const approvedProjects = userProjects.filter((project) => project.status.position === "1").length;
+        const ongoingProjects = userProjects.filter((project) => project.status.position === "0").length;
+        const projectsSupervisors = userProjects.map((project) => {
+            return {
+                project,
+                supervisor: project.supervisor || studentProfile.supervisor
+            };
+        });
+        return res.json({
+            data: {
+                ongoingProjects,
+                pendingProjects,
+                approvedProjects,
+                projectsSupervisors
+            }
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: "error", message: error.message });
+    }
+});
+exports.Fetch__USER_DASHBOARD_DATA__GET = Fetch__USER_DASHBOARD_DATA__GET;
 const Update__PROJECTS__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, methodology, type, description } = req.body;
     const { projectID } = req.params;
@@ -143,23 +198,18 @@ const Update__PROJECTS__PUT = (req, res) => __awaiter(void 0, void 0, void 0, fu
 });
 exports.Update__PROJECTS__PUT = Update__PROJECTS__PUT;
 const Delete__FILE__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, methodology, type, description } = req.body;
-    const { projectID } = req.params;
+    const { projectId, fileId } = req.params;
     try {
-        if (projectID) {
-            const project = yield project_1.Project.findOne({
-                _id: req.params.projectID,
-                author: req.user.id
-            }).populate("files");
+        if (projectId) {
+            const project = yield project_1.Project.updateOne({ _id: projectId }, {
+                $pull: { files: { $eq: fileId } }
+            });
+            const file = file_1.File.findByIdAndDelete(fileId);
             if (!project) {
                 return res
                     .status(400)
                     .json({ status: "error", message: "Invalid Project ID" });
             }
-            project.title = title;
-            project.methodology = methodology;
-            project.description = description;
-            yield project.save();
             return res.json({ status: "success", data: project });
         }
         return res

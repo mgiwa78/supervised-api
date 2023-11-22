@@ -7,7 +7,8 @@ import {
   Create__USER__POST,
   Fetch__USER__GET,
   Fetch__SUPERVISORS__GET,
-  Fetch__STUDENTS__GET
+  Fetch__STUDENTS__GET,
+  Fetch__MY_PROFILE__GET
 } from "../controllers/User-Controller";
 import { AuthenticateUser } from "../middleware/require-auth";
 import { hasPermission } from "../middleware/has-permission";
@@ -73,6 +74,12 @@ router.put(
   AuthenticateUser,
   hasPermission("put"),
   Update__OWN_USER__PUT
+);
+router.get(
+  "/myProfile/view",
+  AuthenticateUser,
+  // hasPermission("put"),
+  Fetch__MY_PROFILE__GET
 );
 
 router.delete(
