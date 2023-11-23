@@ -160,3 +160,38 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
     res.status(500).json({ status: "error", message: error.message });
   }
 };
+
+export const Fetch__STUDENT_DASHBOARD_DATA__GET = async (
+  req: Request,
+  res: Response
+) => {
+  const { user } = req;
+
+  try {
+    // const studentProfile = await User.findById(user.id).populate("supervisor");
+
+    const userProposals: Array<ProjectProposalDoc> = await ProjectProposal.find(
+      {
+        student: user.id
+      }
+    ).populate("status");
+
+    const pendingProposals = userProposals.filter(
+      (proposal) => proposal?.status !== "Approved"
+    ).length;
+
+    const approvedProposals = userProposals.filter(
+      (proposal) => proposal?.status === "Approved"
+    ).length;
+
+    return res.json({
+      data: {
+        approvedProposals,
+        pendingProposals
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ status: "error", message: error.message });
+  }
+};

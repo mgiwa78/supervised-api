@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PUT_APPROVE_PROPOSAL__POST = exports.Upload__PROPOSAL_FILE__PUT = exports.Create__PROPOSAL__POST = exports.Fetch__PROPOSAL__GET = exports.Fetch__SUBMITTED_PROPOSALS_SUPERVISOR__GET = exports.Fetch__USER__PROPOSAL__GET = void 0;
+exports.Fetch__STUDENT_DASHBOARD_DATA__GET = exports.PUT_APPROVE_PROPOSAL__POST = exports.Upload__PROPOSAL_FILE__PUT = exports.Create__PROPOSAL__POST = exports.Fetch__PROPOSAL__GET = exports.Fetch__SUBMITTED_PROPOSALS_SUPERVISOR__GET = exports.Fetch__USER__PROPOSAL__GET = void 0;
 const project_1 = require("../models/project");
 const proposal_1 = require("../models/proposal");
 const models_1 = require("../models");
@@ -136,4 +136,26 @@ const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 
     }
 });
 exports.PUT_APPROVE_PROPOSAL__POST = PUT_APPROVE_PROPOSAL__POST;
+const Fetch__STUDENT_DASHBOARD_DATA__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user } = req;
+    try {
+        // const studentProfile = await User.findById(user.id).populate("supervisor");
+        const userProposals = yield proposal_1.ProjectProposal.find({
+            student: user.id
+        }).populate("status");
+        const pendingProposals = userProposals.filter((proposal) => (proposal === null || proposal === void 0 ? void 0 : proposal.status) !== "Approved").length;
+        const approvedProposals = userProposals.filter((proposal) => (proposal === null || proposal === void 0 ? void 0 : proposal.status) === "Approved").length;
+        return res.json({
+            data: {
+                approvedProposals,
+                pendingProposals
+            }
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ status: "error", message: error.message });
+    }
+});
+exports.Fetch__STUDENT_DASHBOARD_DATA__GET = Fetch__STUDENT_DASHBOARD_DATA__GET;
 //# sourceMappingURL=Proposal-Controller.js.map

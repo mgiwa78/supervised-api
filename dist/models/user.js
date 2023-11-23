@@ -32,6 +32,8 @@ departmentSchema.set("timestamps", true);
 exports.Department = mongoose_1.default.model("department", departmentSchema);
 const userSchema = new mongoose_1.default.Schema({
     firstName: { type: String, required: true },
+    contactNumber: { type: String, required: true },
+    avatar: { type: String },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },

@@ -5,6 +5,7 @@ import { AuthenticateUser } from "../middleware/require-auth";
 import {
   Create__PROPOSAL__POST,
   Fetch__PROPOSAL__GET,
+  Fetch__STUDENT_DASHBOARD_DATA__GET,
   Fetch__SUBMITTED_PROPOSALS_SUPERVISOR__GET,
   Fetch__USER__PROPOSAL__GET,
   PUT_APPROVE_PROPOSAL__POST,
@@ -28,5 +29,11 @@ proposalRouter.put(
   "/:proposalId",
   AuthenticateUser,
   Upload__PROPOSAL_FILE__PUT
+);
+
+proposalRouter.get(
+  "/student/dashboardData",
+  AuthenticateUser,
+  Fetch__STUDENT_DASHBOARD_DATA__GET
 );
 export default proposalRouter;

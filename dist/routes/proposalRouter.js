@@ -10,5 +10,6 @@ proposalRouter.get("/submitted", require_auth_1.AuthenticateUser, Proposal_Contr
 proposalRouter.post("/approve", require_auth_1.AuthenticateUser, Proposal_Controller_1.PUT_APPROVE_PROPOSAL__POST);
 proposalRouter.get("/:proposalId", require_auth_1.AuthenticateUser, Proposal_Controller_1.Fetch__PROPOSAL__GET);
 proposalRouter.put("/:proposalId", require_auth_1.AuthenticateUser, Proposal_Controller_1.Upload__PROPOSAL_FILE__PUT);
+proposalRouter.get("/student/dashboardData", require_auth_1.AuthenticateUser, Proposal_Controller_1.Fetch__STUDENT_DASHBOARD_DATA__GET);
 exports.default = proposalRouter;
 //# sourceMappingURL=proposalRouter.js.map

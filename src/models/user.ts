@@ -26,7 +26,9 @@ export const Department = mongoose.model<DepartmentDoc, DepartmentModel>(
 );
 
 export interface TUser {
+  avatar: string;
   firstName: string;
+  contactNumber: string;
   lastName: string;
   email: string;
   supervisor: string;
@@ -65,8 +67,10 @@ interface UserModel extends mongoose.Model<UserDoc> {
 
 export interface UserDoc extends mongoose.Document {
   firstName: string;
+  avatar: string;
   lastName: string;
   email: string;
+  contactNumber: string;
   password: string;
   department: string;
   supervisor: string | TUser;
@@ -75,6 +79,8 @@ export interface UserDoc extends mongoose.Document {
 
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
+  contactNumber: { type: String, required: true },
+  avatar: { type: String },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
