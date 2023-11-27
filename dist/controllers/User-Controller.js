@@ -200,8 +200,11 @@ const Update__OWN_USER__PUT = (req, res) => __awaiter(void 0, void 0, void 0, fu
     var _a;
     try {
         const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id; // Assuming user ID is available in the request object
-        const { name, email, password } = req.body;
-        const user = yield user_1.User.findByIdAndUpdate(userId, { name, email, password }, { new: true });
+        const { email, avatar, firstName, lastName, contactNumber } = req.body;
+        const user = yield user_1.User.findByIdAndUpdate(userId, Object.assign({ firstName,
+            email,
+            lastName,
+            contactNumber }, (avatar && { avatar })), { new: true });
         if (!user) {
             return res.status(404).json({ status: "error", error: "User not found" });
         }

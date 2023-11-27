@@ -12,26 +12,27 @@ interface DecodedToken extends JwtPayload {
 export const SignIn__AUTH__POST = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const user = await User.find({ email: email })
+    const user = await User.findOne({ email: email })
       .populate("department")
       .exec();
 
-    if (user.length === 0) {
+    if (!user) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    const verifyPassword = await Password.compare(user[0].password, password);
+    const verifyPassword = await Password.compare(user.password, password);
 
     if (verifyPassword) {
-      const roles = await Role.find({ _id: { $in: user[0].roles } });
-      const department = await Department.findOne({ _id: user[0].department });
+      const roles = await Role.find({ _id: { $in: user.roles } });
+      const department = await Department.findOne({ _id: user.department });
 
       const userData = {
-        _id: user[0]._id,
-        firstName: user[0].firstName,
-        lastName: user[0].lastName,
-        email: user[0].email,
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
         department: department,
+        avatar: user.avatar,
         roles: roles
       };
 

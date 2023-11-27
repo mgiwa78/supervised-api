@@ -21,22 +21,23 @@ const role_1 = require("../models/role");
 const SignIn__AUTH__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const user = yield user_1.User.find({ email: email })
+        const user = yield user_1.User.findOne({ email: email })
             .populate("department")
             .exec();
-        if (user.length === 0) {
+        if (!user) {
             return res.status(400).json({ error: "Invalid credentials" });
         }
-        const verifyPassword = yield password_1.Password.compare(user[0].password, password);
+        const verifyPassword = yield password_1.Password.compare(user.password, password);
         if (verifyPassword) {
-            const roles = yield role_1.Role.find({ _id: { $in: user[0].roles } });
-            const department = yield user_1.Department.findOne({ _id: user[0].department });
+            const roles = yield role_1.Role.find({ _id: { $in: user.roles } });
+            const department = yield user_1.Department.findOne({ _id: user.department });
             const userData = {
-                _id: user[0]._id,
-                firstName: user[0].firstName,
-                lastName: user[0].lastName,
-                email: user[0].email,
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
                 department: department,
+                avatar: user.avatar,
                 roles: roles
             };
             const token = jsonwebtoken_1.default.sign({ user: userData }, __CONSTANTS__1.JWT_SECRET);

@@ -70,9 +70,9 @@ router.put(
 );
 
 router.put(
-  "/profile",
+  "/myProfile/update",
   AuthenticateUser,
-  hasPermission("put"),
+  hasPermission("updateOwnProfile"),
   Update__OWN_USER__PUT
 );
 router.get(

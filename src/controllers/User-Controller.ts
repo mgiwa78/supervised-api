@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TUser, User } from "../models/user";
+import { TUser, User, UserDoc } from "../models/user";
 import { Password } from "../services/password";
 import { Role } from "../models/role";
 
@@ -212,11 +212,17 @@ export const Create__USER__POST = async (req: Request, res: Response) => {
 export const Update__OWN_USER__PUT = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id; // Assuming user ID is available in the request object
-    const { name, email, password } = req.body;
+    const { email, avatar, firstName, lastName, contactNumber } = req.body;
 
-    const user = await User.findByIdAndUpdate(
+    const user: UserDoc = await User.findByIdAndUpdate(
       userId,
-      { name, email, password },
+      {
+        firstName,
+        email,
+        lastName,
+        contactNumber,
+        ...(avatar && { avatar })
+      },
       { new: true }
     );
 

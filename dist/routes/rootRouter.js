@@ -17,6 +17,7 @@ const proposalRouter_1 = __importDefault(require("./proposalRouter"));
 const fileRouter_1 = __importDefault(require("./fileRouter"));
 const workflowRouter_1 = __importDefault(require("./workflowRouter"));
 const stateRouter_1 = __importDefault(require("./stateRouter"));
+const faqCategoriesRouter_1 = __importDefault(require("./faqCategoriesRouter"));
 let rootRouter = (0, express_1.Router)();
 rootRouter.get("/", (req, res) => {
     res.send("Supervised API is online and running");
@@ -34,6 +35,7 @@ rootRouter.use("/workflows", workflowRouter_1.default);
 rootRouter.use("/proposals", proposalRouter_1.default);
 rootRouter.use("/permissions", permissionsRoute_1.default);
 rootRouter.use("/states", stateRouter_1.default);
+rootRouter.use("/faqCategories", faqCategoriesRouter_1.default);
 rootRouter.use("/files", fileRouter_1.default);
 exports.default = rootRouter;
 //# sourceMappingURL=rootRouter.js.map
