@@ -16,6 +16,7 @@ import fileRouter from "./fileRouter";
 import workflowRouter from "./workflowRouter";
 import stateRouter from "./stateRouter";
 import faqCategoriesRouter from "./faqCategoriesRouter";
+import faqRouter from "./faqRouter";
 
 let rootRouter = Router();
 
@@ -38,6 +39,7 @@ rootRouter.use("/proposals", proposalRouter);
 rootRouter.use("/permissions", permissionsRouter);
 rootRouter.use("/states", stateRouter);
 rootRouter.use("/faqCategories", faqCategoriesRouter);
+rootRouter.use("/faqs", faqRouter);
 rootRouter.use("/files", fileRouter);
 
 export default rootRouter;
