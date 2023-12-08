@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Fetch__FAQCATEGORIES__GET = exports.Create__FAQCATEGORIES__POST = void 0;
+exports.Delete__FAQCATEGORIES__DELETE = exports.Fetch__FAQCATEGORIES__GET = exports.Update__FAQCATEGORIES__PUT = exports.Create__FAQCATEGORIES__POST = void 0;
 const faq_categories_1 = require("../models/faq-categories");
 const Create__FAQCATEGORIES__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -24,6 +24,21 @@ const Create__FAQCATEGORIES__POST = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.Create__FAQCATEGORIES__POST = Create__FAQCATEGORIES__POST;
+const Update__FAQCATEGORIES__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { faqCategoryId } = req.params;
+        const { title } = req.body;
+        yield faq_categories_1.FaqCategories.findByIdAndUpdate(faqCategoryId, {
+            title: title
+        });
+        const faqcategories = yield faq_categories_1.FaqCategories.find();
+        return res.json({ status: "success", data: faqcategories });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Update__FAQCATEGORIES__PUT = Update__FAQCATEGORIES__PUT;
 const Fetch__FAQCATEGORIES__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const faqcategories = yield faq_categories_1.FaqCategories.find();
@@ -34,4 +49,16 @@ const Fetch__FAQCATEGORIES__GET = (req, res) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.Fetch__FAQCATEGORIES__GET = Fetch__FAQCATEGORIES__GET;
+const Delete__FAQCATEGORIES__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { faqCategoryId } = req.params;
+        yield faq_categories_1.FaqCategories.findByIdAndDelete(faqCategoryId);
+        const faqCategories = yield faq_categories_1.FaqCategories.find();
+        return res.json({ status: "success", data: faqCategories });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Delete__FAQCATEGORIES__DELETE = Delete__FAQCATEGORIES__DELETE;
 //# sourceMappingURL=Faq-Categories-Controller.js.map

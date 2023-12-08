@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Fetch__FAQS__GET = exports.Create__FAQ__POST = void 0;
+exports.Delete__FAQ__DELETE = exports.Fetch__FAQS__GET = exports.Update__FAQ__PUT = exports.Create__FAQ__POST = void 0;
 const faq_1 = require("../models/faq");
 const Create__FAQ__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { caterogy, question, answer } = req.body;
+        const { category, question, answer } = req.body;
         const faq = yield faq_1.Faq.create({
-            caterogy,
+            category,
             answer,
             question
         });
@@ -26,9 +26,26 @@ const Create__FAQ__POST = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.Create__FAQ__POST = Create__FAQ__POST;
+const Update__FAQ__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { faqId } = req.params;
+        const { category, question, answer } = req.body;
+        const faq = yield faq_1.Faq.findByIdAndUpdate(faqId, {
+            category,
+            answer,
+            question
+        });
+        const faqs = yield faq_1.Faq.find();
+        return res.json({ status: "success", data: faqs });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Update__FAQ__PUT = Update__FAQ__PUT;
 const Fetch__FAQS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const faqs = yield faq_1.Faq.find().populate("category");
+        const faqs = yield faq_1.Faq.find();
         return res.json({ status: "success", data: faqs });
     }
     catch (error) {
@@ -36,4 +53,16 @@ const Fetch__FAQS__GET = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.Fetch__FAQS__GET = Fetch__FAQS__GET;
+const Delete__FAQ__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { faqId } = req.params;
+        yield faq_1.Faq.findByIdAndDelete(faqId);
+        const faqs = yield faq_1.Faq.find();
+        return res.json({ status: "success", data: faqs });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Delete__FAQ__DELETE = Delete__FAQ__DELETE;
 //# sourceMappingURL=Faq-Controller.js.map
