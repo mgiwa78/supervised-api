@@ -18,6 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const password_1 = require("../services/password");
 const __CONSTANTS__1 = require("../__CONSTANTS__");
 const role_1 = require("../models/role");
+const notification_1 = require("../_utils/notification");
 const SignIn__AUTH__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
@@ -40,7 +41,10 @@ const SignIn__AUTH__POST = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 avatar: user.avatar,
                 roles: roles
             };
+            const currentDate = new Date();
+            const dateAndTime = currentDate.toLocaleString();
             const token = jsonwebtoken_1.default.sign({ user: userData }, __CONSTANTS__1.JWT_SECRET);
+            yield (0, notification_1.sendNotification)("LOGIN_DETECTED", { user, dateAndTime });
             return res.status(200).json({
                 userAuth: userData,
                 userJwt: token

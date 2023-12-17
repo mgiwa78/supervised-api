@@ -14,9 +14,11 @@ const project_1 = require("../models/project");
 const models_1 = require("../models");
 const file_1 = require("../models/file");
 const workflow_1 = require("../models/workflow");
+const Notification_Controller_1 = require("./Notification-Controller");
 const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
+        (0, Notification_Controller_1.Send__NOTIFICATION)(userId);
         const documents = yield project_1.Project.find({
             student: userId
         }).populate("status");
@@ -29,7 +31,6 @@ const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 
 exports.Fetch__USER__PROJECTS__GET = Fetch__USER__PROJECTS__GET;
 const Fetch__STUDENT__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("first");
         const { studentId } = req.params;
         const documents = yield project_1.Project.find({
             student: studentId

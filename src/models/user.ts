@@ -73,6 +73,7 @@ export interface UserDoc extends mongoose.Document {
   contactNumber: string;
   password: string;
   department: string;
+  notification: { email: boolean };
   supervisor: string | TUser;
   roles: Array<TRole>;
 }
@@ -81,6 +82,11 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   contactNumber: { type: String, required: true },
   avatar: { type: String },
+  notification: {
+    type: { email: Boolean },
+    required: true,
+    default: { email: false }
+  },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },

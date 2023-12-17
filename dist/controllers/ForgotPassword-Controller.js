@@ -16,7 +16,7 @@ exports.verifyPasswordRequestTokenController = exports.passwordUpdateController 
 const password_1 = require("../services/password");
 const __CONSTANTS__1 = require("../__CONSTANTS__");
 const user_1 = require("../models/user");
-const sendResetPasswordMail_1 = __importDefault(require("../services/sendResetPasswordMail"));
+const sendResetPasswordMail_1 = __importDefault(require("../services/mail/sendResetPasswordMail"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const forgotPasswordController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

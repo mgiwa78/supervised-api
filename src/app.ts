@@ -8,7 +8,8 @@ import rootRouter from "./routes/rootRouter";
 import { errorHandler } from "./middleware/error-handlers";
 import { NotFoundError } from "./errors/not-found-error";
 import { Permission } from "./models/permission";
-
+import { Server } from "socket.io";
+import { createServer } from "http";
 const app = express();
 
 const whitelist = [
@@ -32,6 +33,14 @@ const corsOptions = {
   credentials: true
 };
 
+// io.on("connection", (socket: any) => {
+//   console.log("A user connected");
+
+//   socket.on("eventName", (data: any) => {
+//     console.log("Received data:", data);
+//   });
+// });
+
 app.use("public/uploads/documents", express.static("public/uploads/documents"));
 app.use("uploads/docs", express.static("uploads/docs"));
 
@@ -46,9 +55,9 @@ app.use(json());
 
 app.use(rootRouter);
 
-// app.all("*", async (req, res, next) => {
-//   nsext(new NotFoundError());
-// });
+app.all("*", async (req, res, next) => {
+  next(new NotFoundError());
+});
 
 app.all("*", async (req, res) => {
   throw new NotFoundError();

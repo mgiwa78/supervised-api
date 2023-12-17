@@ -1,7 +1,7 @@
 import { Password } from "../services/password";
 import { JWT_SECRET } from "../__CONSTANTS__";
 import { User } from "../models/user";
-import sendResetPasswordMail from "../services/sendResetPasswordMail";
+import sendResetPasswordMail from "../services/mail/sendResetPasswordMail";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { CURSOR_FLAGS } from "mongodb";

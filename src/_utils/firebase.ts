@@ -11,9 +11,10 @@ const config = {
   appId: "1:48985799089:web:5bddf764cad9bdf8b92590"
 };
 
-const app = initializeApp(config);
+export const app = initializeApp(config);
 
 const db = getFirestore(app);
+
 const storage = getStorage(app);
 
 const uploadFileToStorage = async (file: any): Promise<UploadResult> => {

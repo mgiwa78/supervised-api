@@ -65,6 +65,12 @@ const corsOptions = {
     },
     credentials: true
 };
+// io.on("connection", (socket: any) => {
+//   console.log("A user connected");
+//   socket.on("eventName", (data: any) => {
+//     console.log("Received data:", data);
+//   });
+// });
 app.use("public/uploads/documents", express_1.default.static("public/uploads/documents"));
 app.use("uploads/docs", express_1.default.static("uploads/docs"));
 app.use((0, cors_1.default)(corsOptions));
@@ -75,9 +81,9 @@ app.use((0, body_parser_1.json)());
 //   cookieSession({ signed: false, secure: process.env.NODE_ENV !== "test" })
 // );
 app.use(rootRouter_1.default);
-// app.all("*", async (req, res, next) => {
-//   nsext(new NotFoundError());
-// });
+app.all("*", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    next(new not_found_error_1.NotFoundError());
+}));
 app.all("*", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     throw new not_found_error_1.NotFoundError();
 }));

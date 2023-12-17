@@ -212,7 +212,8 @@ export const Create__USER__POST = async (req: Request, res: Response) => {
 export const Update__OWN_USER__PUT = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id; // Assuming user ID is available in the request object
-    const { email, avatar, firstName, lastName, contactNumber } = req.body;
+    const { email, avatar, firstName, lastName, contactNumber, notification } =
+      req.body;
 
     const user: UserDoc = await User.findByIdAndUpdate(
       userId,
@@ -221,6 +222,7 @@ export const Update__OWN_USER__PUT = async (req: Request, res: Response) => {
         email,
         lastName,
         contactNumber,
+        notification,
         ...(avatar && { avatar })
       },
       { new: true }

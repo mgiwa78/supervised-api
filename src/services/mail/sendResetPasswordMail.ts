@@ -1,4 +1,4 @@
-import { EMAIL, PASSWORD } from "../__CONSTANTS__";
+import { EMAIL, PASSWORD } from "../../__CONSTANTS__";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({

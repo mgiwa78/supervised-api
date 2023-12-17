@@ -20,6 +20,7 @@ export interface TProject {
   milestones: { name: string; date: Date }[];
   status: TState;
   comments: string;
+  createdAt: string;
 }
 
 export interface ProjectDoc extends Doc, TProject {}

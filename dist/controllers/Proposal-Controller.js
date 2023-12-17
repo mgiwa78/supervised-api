@@ -15,6 +15,7 @@ const proposal_1 = require("../models/proposal");
 const models_1 = require("../models");
 const file_1 = require("../models/file");
 const workflow_1 = require("../models/workflow");
+const notification_1 = require("../_utils/notification");
 const Fetch__USER__PROPOSAL__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.user.id;
@@ -119,9 +120,14 @@ const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 
                 student: student,
                 status
             });
+            const studentData = yield models_1.User.findById(student).populate("supervisor");
             yield project.save();
             proposal.status = "Approved";
             proposal.save();
+            yield (0, notification_1.sendNotification)("PROJECT_APPROVAL", {
+                project,
+                student: studentData
+            });
             res.json({ status: "success", data: project });
         }
         else {

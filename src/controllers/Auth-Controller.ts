@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { User, Department } from "../models/user";
+import { User, Department, UserDoc } from "../models/user";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { Password } from "../services/password";
 import { JWT_SECRET } from "../__CONSTANTS__";
 import { Role, TRole } from "../models/role";
+import { sendNotification } from "../_utils/notification";
 
 interface DecodedToken extends JwtPayload {
   organization: { organizationId: string };
@@ -12,7 +13,7 @@ interface DecodedToken extends JwtPayload {
 export const SignIn__AUTH__POST = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email: email })
+    const user: UserDoc = await User.findOne({ email: email })
       .populate("department")
       .exec();
 
@@ -36,7 +37,13 @@ export const SignIn__AUTH__POST = async (req: Request, res: Response) => {
         roles: roles
       };
 
+      const currentDate = new Date();
+
+      const dateAndTime = currentDate.toLocaleString();
+
       const token = jwt.sign({ user: userData }, JWT_SECRET);
+
+      await sendNotification("LOGIN_DETECTED", { user, dateAndTime });
 
       return res.status(200).json({
         userAuth: userData,

@@ -15,6 +15,7 @@ import { User } from "../models";
 import { TUser, UserDoc } from "../models/user";
 import { File, FileDoc, TFile } from "../models/file";
 import { Workflow } from "../models/workflow";
+import { sendNotification } from "../_utils/notification";
 
 export const Fetch__USER__PROPOSAL__GET = async (
   req: Request,
@@ -145,10 +146,17 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
         status
       });
 
-      await project.save();
+      const studentData = await User.findById(student).populate("supervisor");
 
+      await project.save();
       proposal.status = "Approved";
       proposal.save();
+
+      await sendNotification("PROJECT_APPROVAL", {
+        project,
+        student: studentData
+      });
+
       res.json({ status: "success", data: project });
     } else {
       res

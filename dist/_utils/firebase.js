@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uploadFileToStorage = exports.storage = exports.db = void 0;
+exports.uploadFileToStorage = exports.storage = exports.db = exports.app = void 0;
 const app_1 = require("firebase/app");
 const firestore_1 = require("firebase/firestore");
 const storage_1 = require("firebase/storage");
@@ -21,10 +21,10 @@ const config = {
     messagingSenderId: "48985799089",
     appId: "1:48985799089:web:5bddf764cad9bdf8b92590"
 };
-const app = (0, app_1.initializeApp)(config);
-const db = (0, firestore_1.getFirestore)(app);
+exports.app = (0, app_1.initializeApp)(config);
+const db = (0, firestore_1.getFirestore)(exports.app);
 exports.db = db;
-const storage = (0, storage_1.getStorage)(app);
+const storage = (0, storage_1.getStorage)(exports.app);
 exports.storage = storage;
 const uploadFileToStorage = (file) => __awaiter(void 0, void 0, void 0, function* () {
     const storageRef = (0, storage_1.ref)(storage, `images/${file.filename}`);

@@ -11,6 +11,7 @@ import { User } from "../models";
 import { File } from "../models/file";
 import { Workflow } from "../models/workflow";
 import { ProjectProposal } from "../models/proposal";
+import { Send__NOTIFICATION } from "./Notification-Controller";
 
 export const Fetch__USER__PROJECTS__GET = async (
   req: Request,
@@ -19,6 +20,7 @@ export const Fetch__USER__PROJECTS__GET = async (
   try {
     const userId = req.user.id;
 
+    Send__NOTIFICATION(userId);
     const documents: TProject[] = await Project.find({
       student: userId
     }).populate("status");
@@ -33,7 +35,6 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
   res: Response
 ) => {
   try {
-    console.log("first");
     const { studentId } = req.params;
 
     const documents: TProject[] = await Project.find({
@@ -54,6 +55,7 @@ export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
       .populate("files")
 
       .populate("workflow");
+
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
