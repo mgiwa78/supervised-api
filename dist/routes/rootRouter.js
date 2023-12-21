@@ -20,6 +20,8 @@ const stateRouter_1 = __importDefault(require("./stateRouter"));
 const faqCategoriesRouter_1 = __importDefault(require("./faqCategoriesRouter"));
 const faqRouter_1 = __importDefault(require("./faqRouter"));
 const notificationRouter_1 = __importDefault(require("./notificationRouter"));
+const ticketRouter_1 = __importDefault(require("./ticketRouter"));
+const ticketCategoriesRouter_1 = __importDefault(require("./ticketCategoriesRouter"));
 let rootRouter = (0, express_1.Router)();
 rootRouter.get("/", (req, res) => {
     res.send("Supervised API is online and running");
@@ -38,8 +40,10 @@ rootRouter.use("/proposals", proposalRouter_1.default);
 rootRouter.use("/permissions", permissionsRoute_1.default);
 rootRouter.use("/states", stateRouter_1.default);
 rootRouter.use("/faqCategories", faqCategoriesRouter_1.default);
+rootRouter.use("/ticketCategories", ticketCategoriesRouter_1.default);
 rootRouter.use("/notifications", notificationRouter_1.default);
 rootRouter.use("/faqs", faqRouter_1.default);
+rootRouter.use("/tickets", ticketRouter_1.default);
 rootRouter.use("/files", fileRouter_1.default);
 exports.default = rootRouter;
 //# sourceMappingURL=rootRouter.js.map

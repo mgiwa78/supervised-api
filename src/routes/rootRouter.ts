@@ -18,6 +18,8 @@ import stateRouter from "./stateRouter";
 import faqCategoriesRouter from "./faqCategoriesRouter";
 import faqRouter from "./faqRouter";
 import notificationRouter from "./notificationRouter";
+import ticketRouter from "./ticketRouter";
+import ticketCategoriesRouter from "./ticketCategoriesRouter";
 
 let rootRouter = Router();
 
@@ -40,8 +42,11 @@ rootRouter.use("/proposals", proposalRouter);
 rootRouter.use("/permissions", permissionsRouter);
 rootRouter.use("/states", stateRouter);
 rootRouter.use("/faqCategories", faqCategoriesRouter);
+rootRouter.use("/ticketCategories", ticketCategoriesRouter);
+
 rootRouter.use("/notifications", notificationRouter);
 rootRouter.use("/faqs", faqRouter);
+rootRouter.use("/tickets", ticketRouter);
 rootRouter.use("/files", fileRouter);
 
 export default rootRouter;
