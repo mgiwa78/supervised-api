@@ -4,6 +4,7 @@ export interface TNotification {
   title: string;
   message: string;
   user: string;
+  status: boolean;
   linkType: string;
   color: string;
 }
@@ -26,6 +27,10 @@ const NotificationSchema = new mongoose.Schema({
   color: {
     type: String,
     required: true
+  },
+  status: {
+    type: Boolean,
+    default: false
   },
   linkType: {
     type: String,

@@ -19,6 +19,10 @@ const NotificationSchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
+    status: {
+        type: Boolean,
+        default: false
+    },
     linkType: {
         type: String,
         required: true

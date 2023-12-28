@@ -212,34 +212,33 @@ export const Fetch__USER_DASHBOARD_DATA__GET = async (
   }
 };
 
-export const Update__PROJECTS__PUT = async (req: Request, res: Response) => {
-  const { title, methodology, type, description } = req.body;
-  const { projectID } = req.params;
+export const Update__PROJECT__PUT = async (req: Request, res: Response) => {
+  const { title, methodology, description } = req.body;
+  const { projectId } = req.params;
   try {
-    if (projectID) {
-      const project: ProjectDoc = await Project.findOne({
-        _id: req.params.projectID,
-        author: req.user.id
-      }).populate("files");
-
-      if (!project) {
-        return res
-          .status(400)
-          .json({ status: "error", message: "Invalid Project ID" });
-      }
-
-      project.title = title;
-      project.methodology = methodology;
-      project.description = description;
-
-      await project.save();
-
-      return res.json({ status: "success", data: project });
+    if (!projectId) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Invalid Project ID" });
     }
 
-    return res
-      .status(400)
-      .json({ status: "error", message: "Invalid DocumentIddD" });
+    const project: ProjectDoc = await Project.findById(projectId).populate(
+      "files"
+    );
+
+    if (!project) {
+      return res
+        .status(400)
+        .json({ status: "error", message: "Invalid Project" });
+    }
+
+    project.title = title;
+    project.methodology = methodology;
+    project.description = description;
+
+    await project.save();
+
+    return res.json({ status: "success", data: project });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
   }

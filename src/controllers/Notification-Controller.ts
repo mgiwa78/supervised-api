@@ -33,12 +33,33 @@ export const Send__NOTIFICATION = async (userID: string) => {
 
 export const Get__NOTIFICATION__GET = async (req: Request, res: Response) => {
   try {
-    // const { userId } = req.params;
-    // console.log(userId);
-    const notifications = await Notification.find().sort({ createdAt: -1 });
+    const notifications = await Notification.find({ user: req.user.id }).sort({
+      createdAt: -1
+    });
     console.log(notifications);
     return res.json({ status: "success", data: notifications });
   } catch (error) {
+    res.status(500).json({ status: "error", error: error.message });
+  }
+};
+export const Mark_as_read__NOTIFICATION__POST = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    // const { userId } = req.params;
+    // console.log(userId);
+
+    await Notification.updateMany(
+      { user: req.user.id, status: false },
+      { $set: { status: true } }
+    );
+
+    const notifications = await Notification.find({ user: req.user.id });
+
+    return res.json({ status: "success", data: notifications });
+  } catch (error) {
+    console.log(error.message);
     res.status(500).json({ status: "error", error: error.message });
   }
 };

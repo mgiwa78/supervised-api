@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Delete__FILE__DELETE = exports.Update__PROJECTS__PUT = exports.Fetch__USER_DASHBOARD_DATA__GET = exports.Upload__PROJECT_DOCUMENT__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
+exports.Delete__FILE__DELETE = exports.Update__PROJECT__PUT = exports.Fetch__USER_DASHBOARD_DATA__GET = exports.Upload__PROJECT_DOCUMENT__PUT = exports.Create__PROJECTS__POST = exports.Fetch__PROJECT_ASSIGNED__GET = exports.Fetch__PROJECT__GET = exports.Fetch__ALL_PROJECTS__GET = exports.Fetch__STUDENT__PROJECTS__GET = exports.Fetch__USER__PROJECTS__GET = void 0;
 const project_1 = require("../models/project");
 const models_1 = require("../models");
 const file_1 = require("../models/file");
@@ -169,35 +169,32 @@ const Fetch__USER_DASHBOARD_DATA__GET = (req, res) => __awaiter(void 0, void 0, 
     }
 });
 exports.Fetch__USER_DASHBOARD_DATA__GET = Fetch__USER_DASHBOARD_DATA__GET;
-const Update__PROJECTS__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, methodology, type, description } = req.body;
-    const { projectID } = req.params;
+const Update__PROJECT__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { title, methodology, description } = req.body;
+    const { projectId } = req.params;
     try {
-        if (projectID) {
-            const project = yield project_1.Project.findOne({
-                _id: req.params.projectID,
-                author: req.user.id
-            }).populate("files");
-            if (!project) {
-                return res
-                    .status(400)
-                    .json({ status: "error", message: "Invalid Project ID" });
-            }
-            project.title = title;
-            project.methodology = methodology;
-            project.description = description;
-            yield project.save();
-            return res.json({ status: "success", data: project });
+        if (!projectId) {
+            return res
+                .status(400)
+                .json({ status: "error", message: "Invalid Project ID" });
         }
-        return res
-            .status(400)
-            .json({ status: "error", message: "Invalid DocumentIddD" });
+        const project = yield project_1.Project.findById(projectId).populate("files");
+        if (!project) {
+            return res
+                .status(400)
+                .json({ status: "error", message: "Invalid Project" });
+        }
+        project.title = title;
+        project.methodology = methodology;
+        project.description = description;
+        yield project.save();
+        return res.json({ status: "success", data: project });
     }
     catch (error) {
         res.status(500).json({ status: "error", error: error.message });
     }
 });
-exports.Update__PROJECTS__PUT = Update__PROJECTS__PUT;
+exports.Update__PROJECT__PUT = Update__PROJECT__PUT;
 const Delete__FILE__DELETE = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { projectId, fileId } = req.params;
     try {

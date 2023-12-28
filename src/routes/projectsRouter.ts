@@ -12,6 +12,7 @@ import {
   Fetch__STUDENT__PROJECTS__GET,
   Fetch__USER_DASHBOARD_DATA__GET,
   Fetch__USER__PROJECTS__GET,
+  Update__PROJECT__PUT,
   Upload__PROJECT_DOCUMENT__PUT
 } from "../controllers/Project-Controller";
 
@@ -23,6 +24,7 @@ const projectRouter: Router = Router();
 
 projectRouter.get("/my", AuthenticateUser, Fetch__USER__PROJECTS__GET);
 projectRouter.get("/", AuthenticateUser, Fetch__ALL_PROJECTS__GET);
+
 projectRouter.get("/:projectId", AuthenticateUser, Fetch__PROJECT__GET);
 projectRouter.get(
   "/supervisor/assigned",
@@ -47,6 +49,12 @@ projectRouter.post(
   AuthenticateUser,
   hasPermission("createProject"),
   Create__PROJECTS__POST
+);
+projectRouter.put(
+  "/:projectId",
+  AuthenticateUser,
+  // hasPermission("uploadDocument"),
+  Update__PROJECT__PUT
 );
 projectRouter.put(
   "/uploadDocument/:projectId",

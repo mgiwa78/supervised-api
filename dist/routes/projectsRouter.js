@@ -13,6 +13,9 @@ projectRouter.get("/supervisor/assigned", require_auth_1.AuthenticateUser, Proje
 projectRouter.delete("/:projectId/:fileId", require_auth_1.AuthenticateUser, Project_Controller_1.Delete__FILE__DELETE);
 projectRouter.get("/student/review/:studentId", require_auth_1.AuthenticateUser, Project_Controller_1.Fetch__STUDENT__PROJECTS__GET);
 projectRouter.post("/", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("createProject"), Project_Controller_1.Create__PROJECTS__POST);
+projectRouter.put("/:projectId", require_auth_1.AuthenticateUser, 
+// hasPermission("uploadDocument"),
+Project_Controller_1.Update__PROJECT__PUT);
 projectRouter.put("/uploadDocument/:projectId", require_auth_1.AuthenticateUser, 
 // hasPermission("uploadDocument"),
 Project_Controller_1.Upload__PROJECT_DOCUMENT__PUT);
