@@ -143,9 +143,9 @@ exports.Fetch__USER__GET = Fetch__USER__GET;
 const Update__USER__PUT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.params.userId;
-        const { firstName, lastName, email, department, password } = req.body;
+        const { firstName, lastName, studentId, email, department, password } = req.body;
         const pas = password_1.Password.toHash(password);
-        const user = yield user_1.User.findByIdAndUpdate(userId, { firstName, lastName, email, pas, department }, { new: true });
+        const user = yield user_1.User.findByIdAndUpdate(userId, { firstName, lastName, email, pas, department, studentId }, { new: true });
         if (!user) {
             return res.status(404).json({ status: "error", error: "User not found" });
         }

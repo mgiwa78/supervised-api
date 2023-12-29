@@ -1,16 +1,9 @@
 import { Request, Response } from "express";
 import { ProjectDoc, Project } from "../models/project";
 import { TProject } from "../models/project";
-// import mammoth from "mammoth";
-// import { FileArray, UploadedFile } from "express-fileupload";
-import path from "path";
-
-import { uploadFileToStorage } from "../_utils/firebase";
-import { ObjectId } from "mongodb";
 import { User } from "../models";
 import { File } from "../models/file";
 import { Workflow } from "../models/workflow";
-import { ProjectProposal } from "../models/proposal";
 import { Send__NOTIFICATION } from "./Notification-Controller";
 
 export const Fetch__USER__PROJECTS__GET = async (
@@ -23,7 +16,9 @@ export const Fetch__USER__PROJECTS__GET = async (
     Send__NOTIFICATION(userId);
     const documents: TProject[] = await Project.find({
       student: userId
-    }).populate("status");
+    })
+      .populate("status")
+      .populate("student");
     res.json({ status: "success", data: documents });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
@@ -41,6 +36,7 @@ export const Fetch__STUDENT__PROJECTS__GET = async (
       student: studentId
     })
       .populate("files")
+      .populate("student")
 
       .populate("workflow");
     res.json({ status: "success", data: documents });
@@ -53,7 +49,13 @@ export const Fetch__ALL_PROJECTS__GET = async (req: Request, res: Response) => {
   try {
     const documents: TProject[] = await Project.find()
       .populate("files")
-
+      .populate("student")
+      .populate({
+        path: "student",
+        populate: {
+          path: "supervisor"
+        }
+      })
       .populate("workflow");
 
     res.json({ status: "success", data: documents });
@@ -69,6 +71,7 @@ export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
     const project: TProject[] = await Project.findById(projectId)
       .populate("student")
       .populate("files")
+      .populate("status")
 
       .populate("workflow")
       .populate({
@@ -99,8 +102,10 @@ export const Fetch__PROJECT_ASSIGNED__GET = async (
       $or: [{ student: { $in: assignedStudentIds } }, { supervisor: user.id }]
     })
       .populate("student")
+      .populate("status")
       .populate("files")
-      .populate("workflow");
+      .populate("workflow")
+      .populate({ path: "student", populate: { path: "department" } });
 
     const assigned = projects?.map((project: any) => {
       return (
@@ -166,6 +171,7 @@ export const Upload__PROJECT_DOCUMENT__PUT = async (
     res.status(500).json({ status: "error", message: error.message });
   }
 };
+
 export const Fetch__USER_DASHBOARD_DATA__GET = async (
   req: Request,
   res: Response
@@ -243,6 +249,7 @@ export const Update__PROJECT__PUT = async (req: Request, res: Response) => {
     res.status(500).json({ status: "error", error: error.message });
   }
 };
+
 export const Delete__FILE__DELETE = async (req: Request, res: Response) => {
   const { projectId, fileId } = req.params;
   try {

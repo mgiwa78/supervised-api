@@ -7,6 +7,7 @@ import { hasPermission } from "../middleware/has-permission";
 import {
   Create__TICKET__POST,
   Delete__TICKET__DELETE,
+  Fetch__MY__TICKETS__GET,
   Fetch__TICKETS__GET,
   Update__TICKET__PUT
 } from "../controllers/Ticket-Controller";
@@ -16,7 +17,7 @@ const ticketRouter: Router = Router();
 ticketRouter.post(
   "/",
   AuthenticateUser,
-  hasPermission("createFaq"),
+  hasPermission("createTicket"),
   Create__TICKET__POST
 );
 ticketRouter.delete(
@@ -33,5 +34,6 @@ ticketRouter.put(
 );
 
 ticketRouter.get("/", AuthenticateUser, Fetch__TICKETS__GET);
+ticketRouter.get("/my", AuthenticateUser, Fetch__MY__TICKETS__GET);
 
 export default ticketRouter;

@@ -39,7 +39,10 @@ const Fetch__SUBMITTED_PROPOSALS_SUPERVISOR__GET = (req, res) => __awaiter(void 
         const studentIds = students.map((student) => student._id);
         const facultyAdminProposals = yield proposal_1.ProjectProposal.find({
             student: { $in: studentIds }
-        }).populate("files");
+        })
+            .populate("files")
+            .populate("student")
+            .populate({ path: "student", populate: { path: "department" } });
         res.json({ status: "success", data: facultyAdminProposals });
     }
     catch (error) {
@@ -105,11 +108,15 @@ const Upload__PROPOSAL_FILE__PUT = (req, res) => __awaiter(void 0, void 0, void 
 });
 exports.Upload__PROPOSAL_FILE__PUT = Upload__PROPOSAL_FILE__PUT;
 const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { title, methodology, workflow, description, student, _id } = req.body;
     try {
         const proposal = yield proposal_1.ProjectProposal.findById(_id);
         const workflowData = yield workflow_1.Workflow.findById(workflow).populate("states");
-        const status = workflowData.states.find((state) => state.position === "-1");
+        if (!workflowData) {
+            res.status(500).json({ status: "error", message: "Invalid Workflow" });
+        }
+        const status = (_a = workflowData === null || workflowData === void 0 ? void 0 : workflowData.states) === null || _a === void 0 ? void 0 : _a.find((state) => state.position === "-1");
         if (proposal.status !== "Approved") {
             const project = new project_1.Project({
                 title,
@@ -133,7 +140,7 @@ const PUT_APPROVE_PROPOSAL__POST = (req, res) => __awaiter(void 0, void 0, void 
         else {
             res
                 .status(500)
-                .json({ status: "error", message: "Proposal has been approved" });
+                .json({ status: "error", message: "Proposal is already approved" });
         }
     }
     catch (error) {

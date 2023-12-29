@@ -106,6 +106,7 @@ export const Fetch__sSTUDENTS__GET = async (req: Request, res: Response) => {
       .json({ status: "error", error: "Internal server error" });
   }
 };
+
 export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
   try {
     const { onDepartment } = req.query;
@@ -127,6 +128,7 @@ export const Fetch__STUDENTS__GET = async (req: Request, res: Response) => {
       .json({ status: "error", error: "Internal server error" });
   }
 };
+
 export const Fetch__USER__GET = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -148,12 +150,13 @@ export const Fetch__USER__GET = async (req: Request, res: Response) => {
 export const Update__USER__PUT = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const { firstName, lastName, email, department, password } = req.body;
+    const { firstName, lastName, studentId, email, department, password } =
+      req.body;
     const pas = Password.toHash(password);
 
     const user = await User.findByIdAndUpdate(
       userId,
-      { firstName, lastName, email, pas, department },
+      { firstName, lastName, email, pas, department, studentId },
       { new: true }
     );
 

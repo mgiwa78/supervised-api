@@ -21,7 +21,9 @@ const Fetch__USER__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 
         (0, Notification_Controller_1.Send__NOTIFICATION)(userId);
         const documents = yield project_1.Project.find({
             student: userId
-        }).populate("status");
+        })
+            .populate("status")
+            .populate("student");
         res.json({ status: "success", data: documents });
     }
     catch (error) {
@@ -36,6 +38,7 @@ const Fetch__STUDENT__PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, vo
             student: studentId
         })
             .populate("files")
+            .populate("student")
             .populate("workflow");
         res.json({ status: "success", data: documents });
     }
@@ -48,6 +51,13 @@ const Fetch__ALL_PROJECTS__GET = (req, res) => __awaiter(void 0, void 0, void 0,
     try {
         const documents = yield project_1.Project.find()
             .populate("files")
+            .populate("student")
+            .populate({
+            path: "student",
+            populate: {
+                path: "supervisor"
+            }
+        })
             .populate("workflow");
         res.json({ status: "success", data: documents });
     }
@@ -62,6 +72,7 @@ const Fetch__PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, func
         const project = yield project_1.Project.findById(projectId)
             .populate("student")
             .populate("files")
+            .populate("status")
             .populate("workflow")
             .populate({
             path: "workflow",
@@ -85,8 +96,10 @@ const Fetch__PROJECT_ASSIGNED__GET = (req, res) => __awaiter(void 0, void 0, voi
             $or: [{ student: { $in: assignedStudentIds } }, { supervisor: user.id }]
         })
             .populate("student")
+            .populate("status")
             .populate("files")
-            .populate("workflow");
+            .populate("workflow")
+            .populate({ path: "student", populate: { path: "department" } });
         const assigned = projects === null || projects === void 0 ? void 0 : projects.map((project) => {
             var _a, _b, _c;
             return (((_a = project.student) === null || _a === void 0 ? void 0 : _a.supervisor) &&

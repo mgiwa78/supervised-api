@@ -47,7 +47,10 @@ export const Fetch__SUBMITTED_PROPOSALS_SUPERVISOR__GET = async (
 
     const facultyAdminProposals: TUser[] = await ProjectProposal.find({
       student: { $in: studentIds }
-    }).populate("files");
+    })
+      .populate("files")
+      .populate("student")
+      .populate({ path: "student", populate: { path: "department" } });
 
     res.json({ status: "success", data: facultyAdminProposals });
   } catch (error) {
@@ -132,8 +135,12 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
   try {
     const proposal = await ProjectProposal.findById(_id);
     const workflowData = await Workflow.findById(workflow).populate("states");
-
-    const status = workflowData.states.find((state) => state.position === "-1");
+    if (!workflowData) {
+      res.status(500).json({ status: "error", message: "Invalid Workflow" });
+    }
+    const status = workflowData?.states?.find(
+      (state) => state.position === "-1"
+    );
 
     if (proposal.status !== "Approved") {
       const project: ProjectDoc = new Project({
@@ -161,7 +168,7 @@ export const PUT_APPROVE_PROPOSAL__POST = async (
     } else {
       res
         .status(500)
-        .json({ status: "error", message: "Proposal has been approved" });
+        .json({ status: "error", message: "Proposal is already approved" });
     }
   } catch (error) {
     console.log(error);

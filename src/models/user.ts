@@ -30,6 +30,7 @@ export interface TUser {
   firstName: string;
   contactNumber: string;
   lastName: string;
+  studentId?: string;
   email: string;
   supervisor: string;
   password: string;
@@ -44,6 +45,7 @@ declare global {
         email: string;
         id: string;
         department?: string;
+        studentId?: string;
         firstName: string;
         contactNumber?: string;
         address?: string;
@@ -72,6 +74,7 @@ export interface UserDoc extends mongoose.Document {
   email: string;
   contactNumber: string;
   password: string;
+  studentId?: string;
   department: string;
   notification: { email: boolean };
   supervisor: string | TUser;
@@ -88,6 +91,7 @@ const userSchema = new mongoose.Schema({
     default: { email: false }
   },
   lastName: { type: String, required: true },
+  studentId: { type: String },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   supervisor: {

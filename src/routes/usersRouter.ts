@@ -65,7 +65,7 @@ router.get(
 router.put(
   "/:userId",
   AuthenticateUser,
-  hasPermission("Users.Edit"),
+  hasPermission("updateUsers"),
   Update__USER__PUT
 );
 

@@ -40,6 +40,7 @@ const userSchema = new mongoose_1.default.Schema({
         default: { email: false }
     },
     lastName: { type: String, required: true },
+    studentId: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     supervisor: {

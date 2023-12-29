@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Delete__TICKET__DELETE = exports.Fetch__TICKETS__GET = exports.Update__TICKET__PUT = exports.Create__TICKET__POST = void 0;
+exports.Delete__TICKET__DELETE = exports.Fetch__TICKETS__GET = exports.Fetch__MY__TICKETS__GET = exports.Update__TICKET__PUT = exports.Create__TICKET__POST = void 0;
 const ticket_1 = require("../models/ticket");
 const Create__TICKET__POST = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -46,8 +46,22 @@ const Update__TICKET__PUT = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.Update__TICKET__PUT = Update__TICKET__PUT;
+const Fetch__MY__TICKETS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { user } = req;
+        const tickets = yield ticket_1.Ticket.find({ author: user.id })
+            .populate("author")
+            .populate("category");
+        return res.json({ status: "success", data: tickets });
+    }
+    catch (error) {
+        res.status(500).json({ status: "error", error: error.message });
+    }
+});
+exports.Fetch__MY__TICKETS__GET = Fetch__MY__TICKETS__GET;
 const Fetch__TICKETS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { user } = req;
         const tickets = yield ticket_1.Ticket.find().populate("author").populate("category");
         return res.json({ status: "success", data: tickets });
     }

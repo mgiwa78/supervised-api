@@ -34,7 +34,7 @@ router.get("/students", require_auth_1.AuthenticateUser,
 // hasPermission("getAllUsers"),
 User_Controller_1.Fetch__STUDENTS__GET);
 router.get("/:userId", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("getAllUsers"), User_Controller_1.Fetch__USER__GET);
-router.put("/:userId", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("Users.Edit"), User_Controller_1.Update__USER__PUT);
+router.put("/:userId", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("updateUsers"), User_Controller_1.Update__USER__PUT);
 router.put("/myProfile/update", require_auth_1.AuthenticateUser, (0, has_permission_1.hasPermission)("updateOwnProfile"), User_Controller_1.Update__OWN_USER__PUT);
 router.get("/myProfile/view", require_auth_1.AuthenticateUser, 
 // hasPermission("put"),
