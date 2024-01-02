@@ -84,7 +84,7 @@ const AuthenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // );
         // const perms = await Permissions.find();
         if (userData) {
-            req.user = Object.assign(Object.assign({ id: decoded.user._id, roles: userData.roles.map((e) => e.name), permissions }, (typeof userData.department !== typeof "TDepartment" && {
+            req.user = Object.assign(Object.assign({ isAdmin: userData.roles.some((role) => role.name === "Superadmin"), id: decoded.user._id, roles: userData.roles.map((e) => e.name), permissions }, (typeof userData.department !== typeof "TDepartment" && {
                 department: userData.department
             })), userData);
         }

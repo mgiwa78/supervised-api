@@ -5,6 +5,7 @@ import { User } from "../models";
 import { File } from "../models/file";
 import { Workflow } from "../models/workflow";
 import { Send__NOTIFICATION } from "./Notification-Controller";
+import { StateDoc } from "../models/state";
 
 export const Fetch__USER__PROJECTS__GET = async (
   req: Request,
@@ -72,12 +73,17 @@ export const Fetch__PROJECT__GET = async (req: Request, res: Response) => {
       .populate("student")
       .populate("files")
       .populate("status")
-
       .populate("workflow")
       .populate({
         path: "workflow",
         populate: {
           path: "states"
+        }
+      })
+      .populate({
+        path: "files",
+        populate: {
+          path: "status"
         }
       });
 
@@ -150,10 +156,16 @@ export const Upload__PROJECT_DOCUMENT__PUT = async (
   const { files } = req.body;
   const { projectId } = req.params;
   let addStatus;
-  const workflow = await Workflow.findOne({ defaultOrder: "-1" });
+
+  const project = await Project.findById(projectId);
+  const workflow = await Workflow.findById(project.workflow).populate("states");
+
+  const defaultStatus: any = workflow.states.find(
+    (state) => state.position === "-1"
+  );
 
   addStatus = files.map((file: any) => {
-    return { ...file, status: workflow ? workflow._id : null };
+    return { ...file, status: defaultStatus ? defaultStatus._id : null };
   });
 
   try {
@@ -194,7 +206,7 @@ export const Fetch__USER_DASHBOARD_DATA__GET = async (
     ).length;
 
     const ongoingProjects = userProjects.filter(
-      (project) => project?.status?.position === "0"
+      (project) => project?.status?.position !== "1"
     ).length;
 
     const projectsSupervisors = userProjects.map((project) => {

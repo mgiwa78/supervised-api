@@ -41,11 +41,20 @@ export const Fetch__MY__TICKETS__GET = async (req: Request, res: Response) => {
   try {
     const { user } = req;
 
-    const tickets = await Ticket.find({ author: user.id })
-      .populate("author")
-      .populate("category");
+    const hasResolveTicket = user.permissions.all.includes("ResolveTicket");
+    if (hasResolveTicket) {
+      const tickets = await Ticket.find()
+        .populate("author")
+        .populate("category");
 
-    return res.json({ status: "success", data: tickets });
+      return res.json({ status: "success", data: tickets });
+    } else {
+      const tickets = await Ticket.find({ author: user.id })
+        .populate("author")
+        .populate("category");
+
+      return res.json({ status: "success", data: tickets });
+    }
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
   }
@@ -53,8 +62,6 @@ export const Fetch__MY__TICKETS__GET = async (req: Request, res: Response) => {
 
 export const Fetch__TICKETS__GET = async (req: Request, res: Response) => {
   try {
-    const { user } = req;
-
     const tickets = await Ticket.find().populate("author").populate("category");
 
     return res.json({ status: "success", data: tickets });

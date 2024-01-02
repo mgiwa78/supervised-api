@@ -2,7 +2,8 @@ import mongoose, { Document, Model, model, Schema } from "mongoose";
 import { TRole } from "./role";
 
 export interface TFile {
-  name: string;
+  title: string;
+  description: string;
   path: string;
   status: string | null;
 }
@@ -12,19 +13,22 @@ interface FileModel extends mongoose.Model<FileDoc> {
 }
 
 export interface FileDoc extends mongoose.Document {
-  name: string;
+  title: string;
+  description: string;
   status: string | null;
   path: string;
   types: Array<TRole>;
 }
 
 const FileSchema = new mongoose.Schema({
-  name: { type: String, required: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
   path: { type: String, required: true },
-  status: { type: String, default: null }
+  status: { type: mongoose.Schema.Types.ObjectId, ref: "State" }
 });
 
 FileSchema.set("timestamps", true);
+
 // mongoose.model("File", FileSchema);
 
 const File: FileModel = (mongoose.models?.File ||

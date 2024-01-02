@@ -46,6 +46,7 @@ declare global {
         id: string;
         department?: string;
         studentId?: string;
+        isAdmin?: boolean;
         firstName: string;
         contactNumber?: string;
         address?: string;

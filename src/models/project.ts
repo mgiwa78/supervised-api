@@ -15,6 +15,7 @@ export interface TProject {
   completionDate: Date;
   category: string;
   methodology: string;
+  workflow: string;
   resources: string[];
   ethicalConsiderations: string;
   milestones: { name: string; date: Date }[];
@@ -40,6 +41,7 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User"
   },
+
   keywords: [{ type: String }],
   completionDate: { type: Date },
   methodology: { type: String },

@@ -102,6 +102,7 @@ export const AuthenticateUser = async (
 
     if (userData) {
       req.user = {
+        isAdmin: userData.roles.some((role) => role.name === "Superadmin"),
         id: decoded.user._id,
         roles: userData.roles.map((e) => e.name),
         permissions,

@@ -79,6 +79,12 @@ const Fetch__PROJECT__GET = (req, res) => __awaiter(void 0, void 0, void 0, func
             populate: {
                 path: "states"
             }
+        })
+            .populate({
+            path: "files",
+            populate: {
+                path: "status"
+            }
         });
         res.json({ status: "success", data: project });
     }
@@ -133,9 +139,11 @@ const Upload__PROJECT_DOCUMENT__PUT = (req, res) => __awaiter(void 0, void 0, vo
     const { files } = req.body;
     const { projectId } = req.params;
     let addStatus;
-    const workflow = yield workflow_1.Workflow.findOne({ defaultOrder: "-1" });
+    const project = yield project_1.Project.findById(projectId);
+    const workflow = yield workflow_1.Workflow.findById(project.workflow).populate("states");
+    const defaultStatus = workflow.states.find((state) => state.position === "-1");
     addStatus = files.map((file) => {
-        return Object.assign(Object.assign({}, file), { status: workflow ? workflow._id : null });
+        return Object.assign(Object.assign({}, file), { status: defaultStatus ? defaultStatus._id : null });
     });
     try {
         const fileDocs = yield file_1.File.insertMany(addStatus);
@@ -160,7 +168,7 @@ const Fetch__USER_DASHBOARD_DATA__GET = (req, res) => __awaiter(void 0, void 0, 
         }).populate("status");
         const pendingProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) === "-1"; }).length;
         const approvedProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) === "1"; }).length;
-        const ongoingProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) === "0"; }).length;
+        const ongoingProjects = userProjects.filter((project) => { var _a; return ((_a = project === null || project === void 0 ? void 0 : project.status) === null || _a === void 0 ? void 0 : _a.position) !== "1"; }).length;
         const projectsSupervisors = userProjects.map((project) => {
             return {
                 project,

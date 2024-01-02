@@ -49,10 +49,19 @@ exports.Update__TICKET__PUT = Update__TICKET__PUT;
 const Fetch__MY__TICKETS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { user } = req;
-        const tickets = yield ticket_1.Ticket.find({ author: user.id })
-            .populate("author")
-            .populate("category");
-        return res.json({ status: "success", data: tickets });
+        const hasResolveTicket = user.permissions.all.includes("ResolveTicket");
+        if (hasResolveTicket) {
+            const tickets = yield ticket_1.Ticket.find()
+                .populate("author")
+                .populate("category");
+            return res.json({ status: "success", data: tickets });
+        }
+        else {
+            const tickets = yield ticket_1.Ticket.find({ author: user.id })
+                .populate("author")
+                .populate("category");
+            return res.json({ status: "success", data: tickets });
+        }
     }
     catch (error) {
         res.status(500).json({ status: "error", error: error.message });
@@ -61,7 +70,6 @@ const Fetch__MY__TICKETS__GET = (req, res) => __awaiter(void 0, void 0, void 0, 
 exports.Fetch__MY__TICKETS__GET = Fetch__MY__TICKETS__GET;
 const Fetch__TICKETS__GET = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { user } = req;
         const tickets = yield ticket_1.Ticket.find().populate("author").populate("category");
         return res.json({ status: "success", data: tickets });
     }

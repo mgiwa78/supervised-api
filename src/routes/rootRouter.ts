@@ -20,6 +20,7 @@ import faqRouter from "./faqRouter";
 import notificationRouter from "./notificationRouter";
 import ticketRouter from "./ticketRouter";
 import ticketCategoriesRouter from "./ticketCategoriesRouter";
+import ticketResponseRouter from "./ticketResponse";
 
 let rootRouter = Router();
 
@@ -40,6 +41,7 @@ rootRouter.use("/documents", documentRouter);
 rootRouter.use("/workflows", workflowRouter);
 rootRouter.use("/proposals", proposalRouter);
 rootRouter.use("/permissions", permissionsRouter);
+rootRouter.use("/tickets-response", ticketResponseRouter);
 rootRouter.use("/states", stateRouter);
 rootRouter.use("/faqCategories", faqCategoriesRouter);
 rootRouter.use("/ticketCategories", ticketCategoriesRouter);
