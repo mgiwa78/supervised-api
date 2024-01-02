@@ -21,7 +21,9 @@ const Fetch__USER__PROPOSAL__GET = (req, res) => __awaiter(void 0, void 0, void 
         const userId = req.user.id;
         const proposals = yield proposal_1.ProjectProposal.find({
             student: userId
-        }).populate("files");
+        })
+            .populate("files")
+            .populate("student");
         res.json({ status: "success", data: proposals });
     }
     catch (error) {

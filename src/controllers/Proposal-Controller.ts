@@ -26,7 +26,9 @@ export const Fetch__USER__PROPOSAL__GET = async (
 
     const proposals: TProjectProposal[] = await ProjectProposal.find({
       student: userId
-    }).populate("files");
+    })
+      .populate("files")
+      .populate("student");
     res.json({ status: "success", data: proposals });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });
