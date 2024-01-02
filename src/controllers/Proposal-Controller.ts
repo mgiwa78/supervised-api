@@ -28,7 +28,8 @@ export const Fetch__USER__PROPOSAL__GET = async (
       student: userId
     })
       .populate("files")
-      .populate("student");
+      .populate("student")
+      .populate({ path: "student", populate: { path: "department" } });
     res.json({ status: "success", data: proposals });
   } catch (error) {
     res.status(500).json({ status: "error", error: error.message });

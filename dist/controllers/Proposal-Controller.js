@@ -23,7 +23,8 @@ const Fetch__USER__PROPOSAL__GET = (req, res) => __awaiter(void 0, void 0, void 
             student: userId
         })
             .populate("files")
-            .populate("student");
+            .populate("student")
+            .populate({ path: "student", populate: { path: "department" } });
         res.json({ status: "success", data: proposals });
     }
     catch (error) {
